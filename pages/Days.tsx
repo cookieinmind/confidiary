@@ -1,11 +1,10 @@
-import Image from 'next/image';
-import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import OtherDayCard from '../components/cards/OtherDayCard';
 import TodayCard from '../components/cards/TodayCard';
 import Chipnav from '../components/ChipsNav';
 import Layout from '../components/Layouts/Layout';
 import SearchBar from '../components/Searchbar';
+import { useRouter } from 'next/router';
 import { auth } from '../firebase/firebase-config';
 
 const options = [
@@ -21,23 +20,6 @@ const options = [
 
 export default function Days() {
   const router = useRouter();
-
-  function signOut() {
-    auth.signOut();
-    router.push('/');
-  }
-
-  //*components
-  function LogOutButton() {
-    return (
-      <button
-        className="bg-errorContainer text-onErrorContainer py-4 px-8 label-lg drop-shadow-1 rounded-md absolute bottom-16 left-0 right-0"
-        onClick={signOut}
-      >
-        Log out
-      </button>
-    );
-  }
 
   useEffect(() => {
     function redirectToSignIn() {
@@ -61,7 +43,6 @@ export default function Days() {
         <TodayCard />
         <OtherDayCard />
       </div>
-      <LogOutButton />
     </div>
   );
 }
