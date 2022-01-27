@@ -4,6 +4,7 @@ import React, { useEffect } from 'react';
 import OtherDayCard from '../components/cards/OtherDayCard';
 import TodayCard from '../components/cards/TodayCard';
 import Chipnav from '../components/ChipsNav';
+import Layout from '../components/Layouts/Layout';
 import SearchBar from '../components/Searchbar';
 import { auth } from '../firebase/firebase-config';
 
@@ -30,7 +31,7 @@ export default function Days() {
   function LogOutButton() {
     return (
       <button
-        className="bg-errorContainer text-onErrorContainer py-4 px-8 label-lg drop-shadow-1 rounded-md absolute bottom-8 left-0 right-0"
+        className="bg-errorContainer text-onErrorContainer py-4 px-8 label-lg drop-shadow-1 rounded-md absolute bottom-16 left-0 right-0"
         onClick={signOut}
       >
         Log out
@@ -64,3 +65,7 @@ export default function Days() {
     </div>
   );
 }
+
+Days.getLayout = function getLayout(page) {
+  return <Layout>{page}</Layout>;
+};

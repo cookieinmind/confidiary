@@ -17,16 +17,12 @@ export default function Home() {
     router.push('/Days');
   }
 
-  return (
-    <div className="bg-surface text-onSurface h-screen w-screen flex items-center justify-center ">
-      <SignInPage afterSignIn={afterSignIn} />
-    </div>
-  );
+  return <SignInPage afterSignIn={afterSignIn} />;
 }
 
 function SignInPage({ afterSignIn }: { afterSignIn: () => void }) {
   return (
-    <>
+    <div className="flex items-center justify-center h-screen w-screen">
       <main className="flex flex-col gap-8">
         <div>
           <h1 className="headline-lg">
@@ -57,6 +53,6 @@ function SignInPage({ afterSignIn }: { afterSignIn: () => void }) {
           {'about >'}
         </button>
       </footer>
-    </>
+    </div>
   );
 }
