@@ -1,6 +1,8 @@
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
+import OtherDayCard from '../components/cards/OtherDayCard';
+import TodayCard from '../components/cards/TodayCard';
 import Chipnav from '../components/ChipsNav';
 import SearchBar from '../components/Searchbar';
 import { auth } from '../firebase/firebase-config';
@@ -53,8 +55,10 @@ export default function Days() {
       <header className="p-2">
         <SearchBar />
       </header>
-      <div className="flex flex-col p-2">
+      <div className="flex flex-col p-2 gap-4">
         <Chipnav options={options} />
+        <TodayCard />
+        <OtherDayCard />
       </div>
       <LogOutButton />
     </div>
