@@ -1,10 +1,62 @@
 module.exports = {
+  darkMode: 'class',
   content: [
-    "./pages/**/*.{js,ts,jsx,tsx}",
-    "./components/**/*.{js,ts,jsx,tsx}",
+    './pages/**/*.{js,ts,jsx,tsx}',
+    './components/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
-    extend: {},
+    fontFamily: {
+      default: ['Roboto Mono', 'monospace'],
+    },
+    colors: {
+      transparent: 'transparent',
+      //Main
+      //Backgrounds
+      surface: '#FCFCFC',
+      onSurface: '#201A1A',
+      black: '#000000',
+
+      //Extras
+      outline: '#71787D',
+
+      error: '#ffb4a9',
+      onError: '#680003',
+      errorContainer: '#930006',
+      onErrorContainer: '#ffdad4',
+    },
+    letterSpacing: {
+      tightest: '-0.5px',
+      tighter: '-0.25px',
+      tight: '-0.1px',
+      normal: '0px',
+      wide: '0.1px',
+      wider: '0.25px',
+      widest: '0.5px',
+    },
+    screens: {
+      xs: '360px',
+      sm: '640px',
+      md: '1023px',
+      lg: '1279px',
+      xl: '1536px',
+      '2xl': '1920px',
+    },
+    extend: {
+      dropShadow: {
+        'page-title': '2px 2px 0px #797297',
+        chip: '-2px 2px 0px #000000',
+      },
+      transitionTimingFunction: {
+        'in-out-back': 'cubic-bezier(0.7, -0.4, 0.4, 1.4)',
+      },
+      backdropBlur: {
+        xxs: '1px',
+        xs: '2px',
+      },
+    },
   },
-  plugins: [],
-}
+  plugins: [
+    require('@tailwindcss/line-clamp'),
+    // ...
+  ],
+};

@@ -1,4 +1,259 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600;700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  body {
+    font-family: 'Roboto Mono';
+    font-size: 16px; /*everything else is on ems*/
+  }
+
+  body::-webkit-scrollbar {
+    display: none;
+  }
+
+  input,
+  textarea {
+    background-color: rgba(0, 0, 0, 0%);
+  }
+
+  textarea:focus,
+  input:focus {
+    outline: none;
+  }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Designing for scroll-bar */
+  .scrollbar-width::-webkit-scrollbar {
+    width: 0.2rem;
+  }
+
+  /* Track */
+  .scrollbar-color::-webkit-scrollbar-track {
+    @apply bg-surface rounded-full;
+  }
+
+  /* Handle */
+  .scrollbar-handle::-webkit-scrollbar-thumb {
+    @apply bg-onSurface rounded-full;
+  }
+
+  /* Handle on hover */
+  .scrollbar-handle-hover::-webkit-scrollbar-thumb:hover {
+    @apply bg-surface;
+  }
+
+  .styled-scrollbar {
+    @apply scrollbar-width scrollbar-color scrollbar-handle scrollbar-handle-hover;
+  }
+
+  /* Text stuff */
+  .display-lg {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 3.5625em;
+    line-height: 4em;
+    /* identical to box height, or 112% */
+    letter-spacing: -0.015625em;
+  }
+  .display-base {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 2.8125em;
+    line-height: 3.25em;
+    /* identical to box height, or 116% */
+  }
+  .display-sm {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 2.25em;
+    line-height: 2.75em;
+    /* identical to box height, or 122% */
+  }
+
+  .headline-lg {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 2em;
+    /* identical to box height, or 125% */
+  }
+  .headline-base {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 1.75em;
+    line-height: 2.25em;
+    /* identical to box height, or 129% */
+  }
+  .headline-sm {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 1.5em;
+    line-height: 2em;
+    /* identical to box height, or 133% */
+  }
+
+  .title-xl {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 1.375em;
+    line-height: 1.75em;
+    /* identical to box height, or 127% */
+  }
+
+  .title-lg {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 1.12em;
+    line-height: 1.625em;
+    /* identical to box height, or 127% */
+  }
+
+  .title-base {
+    font-style: normal;
+    font-weight: 500;
+    font-size: 1em;
+    line-height: 1.5em;
+    /* identical to box height, or 150% */
+
+    letter-spacing: 0.00625em;
+  }
+  .title-sm {
+    font-style: normal;
+    font-weight: 500;
+    font-size: 0.875em;
+    line-height: 1.25em;
+    /* identical to box height, or 143% */
+
+    letter-spacing: 0.00625em;
+  }
+
+  .body-lg {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 1em;
+    line-height: 1.5em;
+    /* identical to box height, or 150% */
+
+    letter-spacing: 0.03125em;
+  }
+  .body-base {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 0.875em;
+    line-height: 1.25em;
+    /* identical to box height, or 143% */
+
+    letter-spacing: 0.015625em;
+  }
+  .body-sm {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 0.75em;
+    line-height: 1em;
+    /* identical to box height, or 133% */
+
+    letter-spacing: 0.025em;
+  }
+
+  .label-2xl {
+    font-style: normal;
+    font-weight: 500;
+    font-size: 1.125em;
+    line-height: 1.5em;
+    /* identical to box height, or 143% */
+
+    letter-spacing: 0.01em;
+  }
+
+  .label-xl {
+    font-style: normal;
+    font-weight: 500;
+    font-size: 1em;
+    line-height: 1.33em;
+    /* identical to box height, or 143% */
+
+    letter-spacing: 0.00625em;
+  }
+
+  .label-lg {
+    font-style: normal;
+    font-weight: 500;
+    font-size: 0.875em;
+    line-height: 1.25em;
+    /* identical to box height, or 143% */
+
+    letter-spacing: 0.00625em;
+  }
+
+  .label-base {
+    font-style: normal;
+    font-weight: 500;
+    font-size: 0.75em;
+    line-height: 1em;
+    /* identical to box height, or 133% */
+
+    letter-spacing: 0.03125em;
+  }
+
+  .label-sm {
+    font-style: normal;
+    font-weight: 500;
+    font-size: 0.6875em;
+    line-height: 1em;
+    /* identical to box height, or 145% */
+
+    letter-spacing: 0.03125em;
+  }
+
+  .subhead-lg {
+    font-style: normal;
+    font-weight: 500;
+    font-size: 1em;
+    line-height: 1.5em;
+    /* identical to box height, or 150% */
+
+    letter-spacing: 0.00625em;
+  }
+
+  .subhead-base {
+    font-style: normal;
+    font-weight: 500;
+    font-size: 0.875em;
+    line-height: 1.25em;
+    /* identical to box height, or 143% */
+
+    letter-spacing: 0.00625em;
+  }
+
+  /* Shadows */
+  .drop-shadow-0 {
+    box-shadow: 0px 0px 0px 0px;
+  }
+
+  .drop-shadow-1 {
+    box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15),
+      0px 1px 2px rgba(0, 0, 0, 0.3);
+  }
+  .drop-shadow-2 {
+    box-shadow: 0px 2px 6px 2px rgba(0, 0, 0, 0.15),
+      0px 1px 2px rgba(0, 0, 0, 0.3);
+  }
+  .drop-shadow-3 {
+    box-shadow: 0px 4px 8px 3px rgba(0, 0, 0, 0.15),
+      0px 1px 3px rgba(0, 0, 0, 0.3);
+  }
+  .drop-shadow-4 {
+    box-shadow: 0px 6px 10px 4px rgba(0, 0, 0, 0.15),
+      0px 2px 3px rgba(0, 0, 0, 0.3);
+  }
+  .drop-shadow-5 {
+    box-shadow: 0px 8px 12px 6px rgba(0, 0, 0, 0.15),
+      0px 4px 4px rgba(0, 0, 0, 0.3);
+  }
+}
