@@ -1,9 +1,20 @@
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
+import Chipnav from '../components/ChipsNav';
+import SearchBar from '../components/Searchbar';
 import { auth } from '../firebase/firebase-config';
 
-const SEARCH_ICON = '&#e8b6;';
+const options = [
+  'anxious',
+  'proud',
+  'amused',
+  'offended',
+  'spiteful',
+  'revulsion',
+  'bitter',
+  'frustrated',
+];
 
 export default function Days() {
   const router = useRouter();
@@ -33,33 +44,19 @@ export default function Days() {
     redirectToSignIn();
   }, [auth, router]);
 
+  if (!auth.currentUser) {
+    return <></>;
+  }
+
   return (
     <div>
-      <header className="p-4">
+      <header className="p-2">
         <SearchBar />
       </header>
+      <div className="flex flex-col p-2">
+        <Chipnav options={options} />
+      </div>
       <LogOutButton />
-    </div>
-  );
-}
-
-export function SearchBar() {
-  return (
-    <div className="w-full flex justify-around items-center py-2 pl-4 pr-2  rounded-full drop-shadow-3">
-      <span className="material-icons">search</span>
-      <input
-        type="text"
-        placeholder="look through your feelings"
-        className="body-base grow text-center"
-      />
-      {auth.currentUser.photoURL && (
-        <Image
-          src={auth?.currentUser?.photoURL}
-          height={32}
-          width={32}
-          className="rounded-full"
-        />
-      )}
     </div>
   );
 }
