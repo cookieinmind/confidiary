@@ -4,18 +4,21 @@ import TodayCard from '../components/cards/TodayCard';
 import Chipnav from '../components/ChipsNav';
 import Layout from '../components/Layouts/Layout';
 import { auth } from '../firebase/firebase-config';
-import { useJournalContext } from '../context/JournalContextProvider';
+import {
+  JournalDiccionary,
+  useJournalContext,
+} from '../context/JournalContextProvider';
 import EntryCard from '../components/cards/EntryCard';
 import { JournalEntry } from '../models/Models';
 
-type JournalDiccionary = {
-  [key: string]: JournalEntry[];
-};
-
 export default function Days() {
-  const { feelings, entries: entriesFromServer } = useJournalContext();
+  const {
+    feelings,
+    entries: entriesFromServer,
+    entriesByDate,
+  } = useJournalContext();
   const [todayEntries, setTodayEntries] = useState<JournalEntry[]>();
-  const [organizedEntries, setOganizedEntries] = useState<JournalDiccionary>();
+  const [notTodaysEntries, setNotTodaysEntries] = useState<JournalDiccionary>();
 
   function getTodayEntres(entries: JournalEntry[]): JournalEntry[] {
     const isToday = (someDate: Date) => {
@@ -29,25 +32,14 @@ export default function Days() {
     return entries.filter((entry) => isToday(entry.date.toDate()));
   }
 
-  function organizeEntries(entries: JournalEntry[]): JournalDiccionary {
-    const result: JournalDiccionary = {};
+  function filterTodaysEntries(all: JournalDiccionary): JournalDiccionary {
+    if (!all) return null;
 
-    const today = new Date().getTime();
-    entries.forEach((entry) => {
-      const diffInDays = Math.round(
-        (today - entry.date.toDate().getTime()) / (1000 * 3600 * 24)
-      );
+    const copy = all;
 
-      const key = diffInDays > 1 ? `${diffInDays} days ago` : 'Yesterday';
+    delete copy['Today'];
 
-      if (result.hasOwnProperty(key)) {
-        result[key].push(entry);
-      } else {
-        result[key] = [entry];
-      }
-    });
-
-    return result;
+    return copy;
   }
 
   useEffect(() => {
@@ -58,11 +50,8 @@ export default function Days() {
       setTodayEntries(_todayEntries);
 
       //Every other one
-      const notTodayEntries = entriesFromServer.filter(
-        (x) => !_todayEntries.includes(x)
-      );
-      const _organizedEntries = organizeEntries(notTodayEntries);
-      setOganizedEntries(_organizedEntries);
+      const _organizedEntries = filterTodaysEntries(entriesByDate);
+      setNotTodaysEntries(_organizedEntries);
     }
 
     setUpEntries();
@@ -77,9 +66,9 @@ export default function Days() {
 
         {todayEntries && <ShowTodaysCard entries={todayEntries} />}
 
-        {organizedEntries &&
-          Object.keys(organizedEntries).map((day, i) => {
-            let entriesPerDay = organizedEntries[day] as JournalEntry[];
+        {notTodaysEntries &&
+          Object.keys(notTodaysEntries).map((day, i) => {
+            let entriesPerDay = notTodaysEntries[day] as JournalEntry[];
 
             return (
               <ShowOtherDayCard date={day} entries={entriesPerDay} key={i} />

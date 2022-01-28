@@ -4,19 +4,31 @@ import EntryCard from '../components/cards/EntryCard';
 import { useJournalContext } from '../context/JournalContextProvider';
 
 export default function Entries() {
-  const { entries } = useJournalContext();
+  const { entriesByDate } = useJournalContext();
 
   return (
     <div>
-      <div className="flex flex-col p-2 gap-4 h-screen">
-        {entries?.map((entry, i) => {
-          return (
-            <div className="shrink-0" key={i}>
-              <EntryCard entry={entry} />
-            </div>
-          );
-        })}
-
+      <div className="flex flex-col p-2 gap-8">
+        {entriesByDate &&
+          Object.keys(entriesByDate).map((date, i) => {
+            let entries = entriesByDate[date];
+            return (
+              <div key={i} className="flex flex-col gap-4">
+                {entries?.map((entry, j) => {
+                  return (
+                    <div className="flex flex-col gap-2" key={j}>
+                      {j === 0 && (
+                        <h3 className="title-medium opacity-50 capitalize">
+                          {date}
+                        </h3>
+                      )}
+                      <EntryCard entry={entry} />
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          })}
         <div className="h-[70px] w-1 shrink-0" />
       </div>
     </div>

@@ -28,8 +28,13 @@ import {
   JOURNALS_PATH,
 } from '../firebase/Paths';
 
+export type JournalDiccionary = {
+  [key: string]: JournalEntry[];
+};
+
 type ModalContextState = {
   entries: JournalEntry[];
+  entriesByDate: JournalDiccionary;
   feelings: Feeling[];
   createEntry: (newEntry: JournalEntry) => Promise<void>;
 };
@@ -37,6 +42,7 @@ type ModalContextState = {
 const journalContext = createContext<ModalContextState>({
   entries: [],
   feelings: [],
+  entriesByDate: null,
   createEntry: async (newEntry: JournalEntry) => {},
 });
 
@@ -46,10 +52,9 @@ export const useJournalContext = () => {
 };
 
 export default function JournalContextProvider({ children }) {
+  //*State
   const [feelings, setFeelings] = useState<Feeling[]>();
   const [entries, setEntries] = useState<JournalEntry[]>();
-  // const [unsubFromFeelings, setUnsubFromFeelings] = useState<Unsubscribe>();
-  // const [unsubFromEntries, setUnsubFromEntries] = useState<Unsubscribe>();
 
   //*Functions
   async function createEntry(newEntry: JournalEntry) {
@@ -140,6 +145,28 @@ export default function JournalContextProvider({ children }) {
     // unsubFromFeelings();
   }
 
+  function organizeEntries(entries: JournalEntry[]): JournalDiccionary {
+    if (!entries) return null;
+    const result: JournalDiccionary = {};
+
+    const today = new Date().getTime();
+    entries.forEach((entry) => {
+      const diffInDays = Math.round(
+        (today - entry.date.toDate().getTime()) / (1000 * 3600 * 24)
+      );
+
+      const key = diffInDays > 1 ? `${diffInDays} days ago` : 'Yesterday';
+
+      if (result.hasOwnProperty(key)) {
+        result[key].push(entry);
+      } else {
+        result[key] = [entry];
+      }
+    });
+
+    return result;
+  }
+
   //*Effects
   useEffect(() => {
     async function setUpUserFeelings(user: User) {
@@ -181,7 +208,7 @@ export default function JournalContextProvider({ children }) {
             feelingName: docData.feelingName,
             uid: docData.uid,
             why: docData.why,
-            date: docData.date,
+            date: new docData.date(),
           };
           entries.push(journalEntry);
         });
@@ -215,6 +242,7 @@ export default function JournalContextProvider({ children }) {
     entries,
     feelings,
     createEntry,
+    entriesByDate: organizeEntries(entries),
   };
 
   return (
