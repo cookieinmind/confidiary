@@ -5,7 +5,7 @@ import Chipnav from '../components/ChipsNav';
 import Layout from '../components/Layouts/Layout';
 import { auth } from '../firebase/firebase-config';
 import { useJournalContext } from '../context/JournalContextProvider';
-import ThoughtCard from '../components/cards/ThoughtCard';
+import EntryCard from '../components/cards/EntryCard';
 import { JournalEntry } from '../models/Models';
 
 type JournalDiccionary = {

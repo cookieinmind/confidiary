@@ -1,9 +1,9 @@
 import React from 'react';
 import Layout from '../components/Layouts/Layout';
-import ThoughtCard from '../components/cards/ThoughtCard';
+import EntryCard from '../components/cards/EntryCard';
 import { useJournalContext } from '../context/JournalContextProvider';
 
-export default function Thoughts() {
+export default function Entries() {
   const { entries } = useJournalContext();
 
   return (
@@ -12,7 +12,7 @@ export default function Thoughts() {
         {entries?.map((entry, i) => {
           return (
             <div className="shrink-0" key={i}>
-              <ThoughtCard entry={entry} />
+              <EntryCard entry={entry} />
             </div>
           );
         })}
@@ -23,6 +23,6 @@ export default function Thoughts() {
   );
 }
 
-Thoughts.getLayout = function getLayout(page) {
+Entries.getLayout = function getLayout(page) {
   return <Layout>{page}</Layout>;
 };

@@ -15,7 +15,7 @@ export default function Navbar() {
       <NavItem path="/insights" label="insights" icon="insights" />
       <CreateButton onClick={manageCreation} />
       <NavItem path="/rankings" label="rankings" icon="star" />
-      <NavItem path="/thoughts" label="thoughts" icon="bubble_chart" />
+      <NavItem path="/entries" label="entries" icon="bubble_chart" />
 
       {showCreate && <Create onClose={() => setShowCreate(false)} />}
     </div>
