@@ -22,11 +22,11 @@ export default function Days() {
       <div className="flex flex-col p-2 gap-4">
         {/* <Chipnav options={options} /> */}
         <TodayCard />
-        <TodayCard />
-        <TodayCard />
-        <TodayCard />
-        <TodayCard />
-        <TodayCard />
+        <OtherDayCard />
+        <OtherDayCard />
+        <OtherDayCard />
+        <OtherDayCard />
+        <OtherDayCard />
         <OtherDayCard />
       </div>
     </div>
