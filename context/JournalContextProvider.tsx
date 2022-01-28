@@ -37,6 +37,7 @@ type ModalContextState = {
   entriesByDate: JournalDiccionary;
   feelings: Feeling[];
   createEntry: (newEntry: JournalEntry) => Promise<void>;
+  findFeeling: (feelingName: string) => Feeling;
 };
 
 const journalContext = createContext<ModalContextState>({
@@ -44,6 +45,7 @@ const journalContext = createContext<ModalContextState>({
   feelings: [],
   entriesByDate: null,
   createEntry: async (newEntry: JournalEntry) => {},
+  findFeeling: (feelingName: string) => null,
 });
 
 export const useJournalContext = () => {
@@ -57,6 +59,12 @@ export default function JournalContextProvider({ children }) {
   const [entries, setEntries] = useState<JournalEntry[]>();
 
   //*Functions
+  function findFeeling(feelingName: string): Feeling {
+    return feelings.filter(
+      (f) => f.name.toLocaleLowerCase() === feelingName.toLocaleLowerCase()
+    )[0];
+  }
+
   async function createEntry(newEntry: JournalEntry) {
     console.log('called createEntry');
     try {
@@ -243,6 +251,7 @@ export default function JournalContextProvider({ children }) {
     feelings,
     createEntry,
     entriesByDate: organizeEntries(entries),
+    findFeeling,
   };
 
   return (

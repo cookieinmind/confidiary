@@ -9,7 +9,7 @@ import {
   useJournalContext,
 } from '../context/JournalContextProvider';
 import EntryCard from '../components/cards/EntryCard';
-import { JournalEntry } from '../models/Models';
+import { Feeling, JournalEntry } from '../models/Models';
 
 export default function Days() {
   const {
@@ -85,12 +85,12 @@ function ShowTodaysCard({ entries }: { entries: JournalEntry[] }) {
   const entriesPerFeeling: { feeling: string; entries: number }[] = [];
 
   entries.forEach((entry) => {
-    const theFeeling = entriesPerFeeling.filter(
+    const feelingEntry = entriesPerFeeling.filter(
       (el) => el.feeling === entry.feelingName
     )[0];
 
-    if (theFeeling) {
-      theFeeling.entries = theFeeling.entries + 1;
+    if (feelingEntry) {
+      feelingEntry.entries = feelingEntry.entries + 1;
     } else {
       entriesPerFeeling.push({ feeling: entry.feelingName, entries: 1 });
     }

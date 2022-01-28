@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { JournalEntry } from '../../models/Models';
+import { bgColorPicker, textColorPicker } from '../utils/ColorPicker';
+import { useJournalContext } from '../../context/JournalContextProvider';
 
 const dummyText =
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
@@ -24,7 +26,7 @@ export default function EntryCard({ entry }: { entry: JournalEntry }) {
       `}
     >
       <CardHeader
-        feeling={entry.feelingName}
+        feelingName={entry.feelingName}
         time={
           entry.date.toDate().getHours().toString() +
           ':' +
@@ -56,27 +58,31 @@ function CardContent({ content, show }: { content: string; show: boolean }) {
 
 function CardHeader({
   time,
-  feeling,
+  feelingName,
   onClick,
   expanded,
 }: {
   time: string;
-  feeling: string;
+  feelingName: string;
   onClick: () => void;
   expanded: boolean;
 }) {
+  const { findFeeling } = useJournalContext();
+  const feeling = findFeeling(feelingName);
+  const bgColor = bgColorPicker(feeling);
+
   const flex_behaviour = `basis-auto shrink-0 grow-0}`;
 
   return (
     <header
-      className={`cursor-pointer relative z-20 p-4 flex items-end justify-between bg-[#FF5959] text-surface ${flex_behaviour}`}
+      className={`cursor-pointer relative z-20 p-4 flex items-end justify-between ${bgColor}  text-surface ${flex_behaviour}`}
       onClick={onClick}
     >
       <div className="grow">
-        <span className="label-base opacity-50 lowercase">at {time}</span>
+        <span className="label-base opacity-70 lowercase mt-1">at {time}</span>
         <p className="body-base">
           you were feeling{' '}
-          <span className="font-bold text-onSurface">{feeling}</span>
+          <span className="font-bold text-onSurface">{feelingName}</span>
         </p>
       </div>
       <button className="shrink-0 grid place-items-center">

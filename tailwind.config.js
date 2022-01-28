@@ -27,6 +27,23 @@ module.exports = {
       onError: '#680003',
       errorContainer: '#930006',
       onErrorContainer: '#ffdad4',
+
+      //Sins
+      lust: '#F0134D',
+      gluttony: '#7900FF',
+      greed: '#1EAE98',
+      sloth: '#FF4D00',
+      wrath: '#FA9905',
+      pride: '#323EDD',
+      envy: '#FA26A0',
+      //Virtues
+      chastity: '#F889A6',
+      temperance: '#BC80FF',
+      charity: '#8ED7CB',
+      diligence: '#FFA680',
+      patience: '#FDCC82',
+      humility: '#989EEE',
+      kindness: '#FD92CF',
     },
     letterSpacing: {
       tightest: '-0.5px',
