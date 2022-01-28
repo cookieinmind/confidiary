@@ -1,43 +1,24 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useModalContext } from '../context/ModalContextProvider';
-
-const serverSuggestions: string[] = [
-  'mad',
-  'angry',
-  'happy',
-  'whatever',
-  'whatever',
-  'whatever',
-  'whatever',
-  'whatever',
-  'whatever',
-  'whatever',
-  'whatever',
-  'whatever',
-  'whatever',
-  'whatever',
-  'whatever',
-  'whatever',
-  'whatever',
-  'whatever',
-  'whatever',
-  'whatever',
-];
+import { useJournalContext } from '../context/JournalContextProvider';
+import { Feeling, JournalEntry } from '../models/Models';
+import { auth } from '../firebase/firebase-config';
 
 export default function Create({ onClose }: { onClose: () => void }) {
+  //*Context
+  const { createEntry, feelings } = useJournalContext();
+
   //*UI
   const [canSubmit, setCanSubmit] = useState<boolean>(false);
 
   //*Form
-  const [feeling, setFeeling] = useState<string>(null);
+  const [feeling, setFeeling] = useState<Feeling>(null);
   const [why, setWhy] = useState<string>(null);
 
   //*Effects
   useEffect(() => {
-    setCanSubmit(
-      feeling && feeling !== '' && serverSuggestions.includes(feeling)
-    );
+    setCanSubmit(feeling && feelings.includes(feeling));
   }, [feeling, setCanSubmit]);
 
   //*Methods
@@ -46,8 +27,16 @@ export default function Create({ onClose }: { onClose: () => void }) {
     submit();
   }
 
-  function submit() {
-    console.log({ feeling, why });
+  async function submit() {
+    console.log('called submit');
+    const data: JournalEntry = {
+      date: new Date(),
+      feelingName: feeling.name,
+      uid: auth.currentUser.uid,
+      why: why,
+    };
+    createEntry(data);
+    onClose();
   }
 
   return (
@@ -67,7 +56,7 @@ export default function Create({ onClose }: { onClose: () => void }) {
         >
           {/* Feeling */}
           <InputWihtSuggestions
-            data={serverSuggestions}
+            suggestedFeelings={feelings}
             setFeeling={setFeeling}
           />
 
@@ -112,31 +101,32 @@ function FormButton({
 }
 
 function InputWihtSuggestions({
-  data,
+  suggestedFeelings,
   setFeeling,
 }: {
-  data: string[];
-  setFeeling: (newVal: string) => void;
+  suggestedFeelings: Feeling[];
+  setFeeling: (newVal: Feeling) => void;
 }) {
-  const [filteredData, setFilteredData] = useState<string[]>();
+  const [filteredData, setFilteredData] = useState<Feeling[]>();
   const inputRef = useRef<HTMLInputElement>();
   const [isTying, setIsTying] = useState<boolean>(false);
 
   function handleTyping(e: React.ChangeEvent<HTMLInputElement>) {
     const typed = e.target.value;
-    setFeeling(typed);
+    // setFeeling(typed);
     if (typed === '') {
+      //the user deleted the input
       setFilteredData(null);
       return;
     }
-    const newFilter = data.filter((value) => {
-      return value.includes(typed);
+    const newFilter = suggestedFeelings.filter((value) => {
+      return value.name.includes(typed);
     });
     setFilteredData(newFilter);
   }
 
-  function pickSuggestion(suggestion: string) {
-    inputRef.current.value = suggestion;
+  function pickSuggestion(suggestion: Feeling) {
+    inputRef.current.value = suggestion.name;
     setFilteredData(null);
     setFeeling(suggestion);
   }
@@ -173,7 +163,7 @@ function InputWihtSuggestions({
           <div className="flex flex-col bg-black text-surface w-full max-h-[13rem] overflow-y-auto">
             {filteredData.map((value, i) => {
               return (
-                <Suggestion text={value} key={i} onClick={pickSuggestion} />
+                <Suggestion feeling={value} key={i} onClick={pickSuggestion} />
               );
             })}
           </div>
@@ -184,15 +174,15 @@ function InputWihtSuggestions({
 }
 
 function Suggestion({
-  text,
+  feeling,
   onClick,
 }: {
-  text: string;
-  onClick: (newVal: string) => void;
+  feeling: Feeling;
+  onClick: (newVal: Feeling) => void;
 }) {
   function handleClick(e) {
     e.preventDefault();
-    onClick(text);
+    onClick(feeling);
   }
 
   return (
@@ -200,7 +190,7 @@ function Suggestion({
       className="flex w-full justify-between items-center hover:bg-error p-4"
       onClick={handleClick}
     >
-      <span className="label-lg capitalize">{text}</span>
+      <span className="label-lg capitalize">{feeling.name}</span>
       <span className="w-[20px] h-[20px] rounded-full bg-error" />
     </button>
   );

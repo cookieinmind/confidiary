@@ -1,16 +1,16 @@
 export type JournalEntry = {
   date: Date;
-  feeling: string;
-  why: string;
+  feelingName: string;
+  why?: string;
   uid: string;
 };
 
-export type Thought = {
-  day: string;
-  created: string;
-  feeling: string;
-  why: string;
-};
+// export type Thought = {
+//   day: string;
+//   created: string;
+//   feelingName: string;
+//   why: string;
+// };
 
 export type Feeling = {
   name: string;

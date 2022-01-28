@@ -5,6 +5,7 @@ import { auth, firestore as db } from '../firebase/firebase-config';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { Feeling, JournalEntry } from '../models/Models';
 import {
+  addDoc,
   collection,
   doc,
   getDoc,
@@ -14,16 +15,22 @@ import {
   where,
 } from 'firebase/firestore';
 
-import { USERS_FEELINGS_PATH, DEFAULT_FEELINGS_PATH } from '../firebase/Paths';
+import {
+  USERS_FEELINGS_PATH,
+  DEFAULT_FEELINGS_PATH,
+  JOURNALS_PATH,
+} from '../firebase/Paths';
 
 type ModalContextState = {
   entries: JournalEntry[];
   feelings: Feeling[];
+  createEntry: (newEntry: JournalEntry) => Promise<void>;
 };
 
 const journalContext = createContext<ModalContextState>({
   entries: [],
   feelings: [],
+  createEntry: async (newEntry: JournalEntry) => {},
 });
 
 export const useJournalContext = () => {
@@ -34,6 +41,17 @@ export const useJournalContext = () => {
 export default function JournalContextProvider({ children }) {
   const [feelings, setFeelings] = useState<Feeling[]>();
   const [entries, setEntries] = useState<JournalEntry[]>();
+
+  //*Functions
+  async function createEntry(newEntry: JournalEntry) {
+    console.log('called createEntry');
+    try {
+      const col = collection(db, JOURNALS_PATH);
+      const response = await addDoc(col, newEntry);
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   //*Effects
   useEffect(() => {
@@ -66,17 +84,18 @@ export default function JournalContextProvider({ children }) {
     }
 
     async function getUserEntries(user: User) {
+      const x = new Date();
+
       try {
         const journalCollection = collection(db, 'journals');
         const q = query(journalCollection, where('uid', '==', user.uid));
         const snapshot = await getDocs(q);
 
         const entries: JournalEntry[] = [];
-
         snapshot.forEach((s) => {
           const docData = s.data();
           const journalEntry: JournalEntry = {
-            feeling: docData.feeling,
+            feelingName: docData.feelingName,
             uid: docData.uid,
             why: docData.why,
             date: new Date(docData.date),
@@ -100,6 +119,7 @@ export default function JournalContextProvider({ children }) {
   const state = {
     entries,
     feelings,
+    createEntry,
   };
 
   return (
