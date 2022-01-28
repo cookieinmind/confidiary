@@ -3,7 +3,7 @@ import NavItem from './NavItem';
 import Create from '../Create';
 
 export default function Navbar() {
-  const [showCreate, setShowCreate] = useState<boolean>(true);
+  const [showCreate, setShowCreate] = useState<boolean>(false);
 
   function manageCreation() {
     setShowCreate(true);

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Thought } from '../../models/Thought';
+import { JournalEntry } from '../../models/Models';
 
 const dummyText =
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
 
-export default function ThoughtCard({ thought }: { thought: Thought }) {
+export default function ThoughtCard({ entry }: { entry: JournalEntry }) {
   const [show, setShow] = useState<boolean>(true);
 
   function manageExpand() {
@@ -25,12 +25,12 @@ export default function ThoughtCard({ thought }: { thought: Thought }) {
       `}
     >
       <CardHeader
-        feeling="happy"
-        time="5pm"
+        feeling={entry.feelingName}
+        time={entry.date.getHours().toString()}
         onClick={manageExpand}
         expanded={show}
       />
-      <CardContent content={dummyText} show={show} />
+      <CardContent content={entry.why} show={show} />
     </article>
   );
 }

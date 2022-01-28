@@ -4,30 +4,19 @@ import TodayCard from '../components/cards/TodayCard';
 import Chipnav from '../components/ChipsNav';
 import Layout from '../components/Layouts/Layout';
 import { auth } from '../firebase/firebase-config';
-
-const options = [
-  'anxious',
-  'proud',
-  'amused',
-  'offended',
-  'spiteful',
-  'revulsion',
-  'bitter',
-  'frustrated',
-];
+import { useJournalContext } from '../context/JournalContextProvider';
+import ThoughtCard from '../components/cards/ThoughtCard';
 
 export default function Days() {
+  const { feelings, entries } = useJournalContext();
   return (
     <div>
       <div className="flex flex-col p-2 gap-4">
         {/* <Chipnav options={options} /> */}
-        <TodayCard />
-        <OtherDayCard />
-        <OtherDayCard />
-        <OtherDayCard />
-        <OtherDayCard />
-        <OtherDayCard />
-        <OtherDayCard />
+        {entries &&
+          entries.map((f, i) => {
+            return <ThoughtCard key={i} entry={f} />;
+          })}
       </div>
     </div>
   );
