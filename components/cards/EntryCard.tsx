@@ -18,6 +18,13 @@ export default function EntryCard({ entry }: { entry: JournalEntry }) {
     show ? 'drop-shadow-2 h-fit' : 'drop-shadow-1 h-[73.5px]'
   }`;
 
+  const time =
+    entry.date.toDate().getHours().toString() +
+    ':' +
+    (entry.date.toDate().getMinutes() < 10
+      ? '0' + entry.date.toDate().getMinutes().toString()
+      : entry.date.toDate().getMinutes().toString());
+
   return (
     <article
       className={`bg-surface z-0 
@@ -27,11 +34,7 @@ export default function EntryCard({ entry }: { entry: JournalEntry }) {
     >
       <CardHeader
         feelingName={entry.feelingName}
-        time={
-          entry.date.toDate().getHours().toString() +
-          ':' +
-          entry.date.toDate().getMinutes().toString()
-        }
+        time={time}
         onClick={manageExpand}
         expanded={show}
       />

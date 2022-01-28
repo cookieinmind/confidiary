@@ -4,6 +4,7 @@ import { Feeling, JournalEntry } from '../models/Models';
 import { auth } from '../firebase/firebase-config';
 import { Timestamp } from 'firebase/firestore';
 import Modal from './utils/Modal';
+import { bgColorPicker } from './utils/ColorPicker';
 
 export default function Create({ onClose }: { onClose: () => void }) {
   //*Context
@@ -185,13 +186,15 @@ function Suggestion({
     onClick(feeling);
   }
 
+  const bgColor = bgColorPicker(feeling);
+
   return (
     <button
       className="flex w-full justify-between items-center hover:bg-error p-4"
       onClick={handleClick}
     >
       <span className="label-lg capitalize">{feeling.name}</span>
-      <span className="w-[20px] h-[20px] rounded-full bg-error" />
+      <span className={`w-[20px] h-[20px] rounded-full ${bgColor}`} />
     </button>
   );
 }
