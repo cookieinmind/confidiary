@@ -1,10 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
-import { useModalContext } from '../context/ModalContextProvider';
 import { useJournalContext } from '../context/JournalContextProvider';
 import { Feeling, JournalEntry } from '../models/Models';
 import { auth } from '../firebase/firebase-config';
 import { Timestamp } from 'firebase/firestore';
+import Modal from './utils/Modal';
 
 export default function Create({ onClose }: { onClose: () => void }) {
   //*Context
@@ -232,22 +231,4 @@ function TextArea({ setWhy }: { setWhy: (s: string) => void }) {
       </div>
     </div>
   );
-}
-
-function Modal({ children, selector = '#portal' }) {
-  const { setIsModalOn } = useModalContext();
-  const [mounted, setMounted] = useState<boolean>();
-
-  useEffect(() => {
-    setMounted(true);
-    setIsModalOn(true);
-    return () => {
-      setMounted(false);
-      setIsModalOn(false);
-    };
-  }, [selector]);
-
-  return mounted
-    ? createPortal(children, document.querySelector(selector))
-    : null;
 }
