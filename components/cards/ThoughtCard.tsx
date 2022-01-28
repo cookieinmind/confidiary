@@ -5,7 +5,7 @@ const dummyText =
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
 
 export default function ThoughtCard({ entry }: { entry: JournalEntry }) {
-  const [show, setShow] = useState<boolean>(true);
+  const [show, setShow] = useState<boolean>(false);
 
   function manageExpand() {
     console.log('should show:', !show);
@@ -20,7 +20,6 @@ export default function ThoughtCard({ entry }: { entry: JournalEntry }) {
     <article
       className={`bg-surface z-0 
       relative rounded-lg flex flex-col
-      h-full
       ${animationStyles}      
       `}
     >
@@ -45,13 +44,13 @@ function CardContent({ content, show }: { content: string; show: boolean }) {
   }`;
 
   return (
-    <main
+    <div
       className={`bg-surface p-4 z-10 drop-shadow-2 relative      
     ${flex_behaviour}
     `}
     >
       <p className="body-base">{content}</p>
-    </main>
+    </div>
   );
 }
 

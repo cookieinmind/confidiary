@@ -40,6 +40,7 @@ export default function Layout({
         <SearchBar />
       </header>
       <div className="py-16">{children}</div>
+
       <div className="z-10 fixed bottom-0 w-screen drop-shadow-5">
         <LogOutButton />
         <Navbar />
