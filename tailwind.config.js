@@ -10,6 +10,10 @@ module.exports = {
     },
     colors: {
       transparent: 'transparent',
+      darkTransparent: 'rgba(0, 0, 0, 0.5)',
+
+      disabled: '#998E8E',
+      onDisabled: '#7e7e7e',
       //Main
       //Backgrounds
       surface: '#FCFCFC',

@@ -2,12 +2,16 @@ import React from 'react';
 import Navbar from '../navbar/Navbar';
 import { useRouter } from 'next/router';
 import { auth } from '../../firebase/firebase-config';
+import SearchBar from '../Searchbar';
+import { useModalContext } from '../../context/ModalContextProvider';
 
 export default function Layout({
   children,
 }: {
   children: JSX.Element | JSX.Element[];
 }) {
+  const { isModalOn } = useModalContext();
+
   const router = useRouter();
 
   function signOut() {
@@ -27,10 +31,19 @@ export default function Layout({
   }
 
   return (
-    <div className="relative bg-surface text-onSurface h-screen w-screen ">
-      {children}
+    <div
+      className={`relative bg-surface text-onSurface h-screen w-screen ${
+        isModalOn ? 'overflow-x-hidden' : ''
+      }`}
+    >
+      <header className="z-10 fixed top-0 left-0 right-0 p-2">
+        <SearchBar />
+      </header>
+      <div className="py-16">{children}</div>
       <LogOutButton />
-      <Navbar />
+      <div className="z-10 fixed bottom-0 w-screen drop-shadow-5">
+        <Navbar />
+      </div>
     </div>
   );
 }

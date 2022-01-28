@@ -3,8 +3,6 @@ import OtherDayCard from '../components/cards/OtherDayCard';
 import TodayCard from '../components/cards/TodayCard';
 import Chipnav from '../components/ChipsNav';
 import Layout from '../components/Layouts/Layout';
-import SearchBar from '../components/Searchbar';
-import { useRouter } from 'next/router';
 import { auth } from '../firebase/firebase-config';
 
 const options = [
@@ -19,27 +17,15 @@ const options = [
 ];
 
 export default function Days() {
-  const router = useRouter();
-
-  useEffect(() => {
-    function redirectToSignIn() {
-      console.log(auth.currentUser);
-      if (!auth.currentUser) router.push('/');
-    }
-    redirectToSignIn();
-  }, [auth, router]);
-
-  if (!auth.currentUser) {
-    return <></>;
-  }
-
   return (
     <div>
-      <header className="p-2">
-        <SearchBar />
-      </header>
       <div className="flex flex-col p-2 gap-4">
-        <Chipnav options={options} />
+        {/* <Chipnav options={options} /> */}
+        <TodayCard />
+        <TodayCard />
+        <TodayCard />
+        <TodayCard />
+        <TodayCard />
         <TodayCard />
         <OtherDayCard />
       </div>

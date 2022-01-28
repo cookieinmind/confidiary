@@ -1,5 +1,6 @@
 import '../styles/globals.css';
 import Head from 'next/head';
+import ModalContextProvider from '../context/ModalContextProvider';
 
 //return <Component {...pageProps} />
 function MyApp({ Component, pageProps }) {
@@ -13,7 +14,9 @@ function MyApp({ Component, pageProps }) {
             href="https://fonts.googleapis.com/icon?family=Material+Icons"
           />
         </Head>
-        {Component.getLayout(<Component {...pageProps} />)}
+        <ModalContextProvider>
+          {Component.getLayout(<Component {...pageProps} />)}
+        </ModalContextProvider>
       </>
     );
   } else {
@@ -26,7 +29,9 @@ function MyApp({ Component, pageProps }) {
             href="https://fonts.googleapis.com/icon?family=Material+Icons"
           />
         </Head>
-        <Component {...pageProps} />
+        <ModalContextProvider>
+          <Component {...pageProps} />
+        </ModalContextProvider>
       </>
     );
   }

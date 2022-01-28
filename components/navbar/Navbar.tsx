@@ -1,14 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 import NavItem from './NavItem';
+import Create from '../Create';
 
 export default function Navbar() {
+  const [showCreate, setShowCreate] = useState<boolean>(true);
+
+  function manageCreation() {
+    setShowCreate(true);
+  }
+
   return (
-    <div className="w-screen absolute bottom-0 flex items-center justify-between py-2 px-4 bg-black text-surface">
+    <div className="w-full flex items-center justify-between py-2 px-4 bg-black text-surface">
       <NavItem path="/days" label="days" icon="calendar_today" />
       <NavItem path="/insights" label="insights" icon="insights" />
-      <CreateButton onClick={() => console.error('Redirect to create page')} />
+      <CreateButton onClick={manageCreation} />
       <NavItem path="/rankings" label="rankings" icon="star" />
       <NavItem path="/thoughts" label="thoughts" icon="bubble_chart" />
+
+      {showCreate && <Create onClose={() => setShowCreate(false)} />}
     </div>
   );
 }

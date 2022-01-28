@@ -25,6 +25,12 @@
 }
 
 @layer utilities {
+  .center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }
