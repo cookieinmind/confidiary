@@ -3,15 +3,19 @@ import Image from 'next/image';
 import { auth, signInWithGoogle } from '../firebase/firebase-config';
 import { useRouter } from 'next/router';
 import { NextRouter } from 'next/router';
+import { useEffect } from 'react';
+import { onAuthStateChanged } from 'firebase/auth';
 
 export default function Home() {
-  const isLoggedIn = auth.currentUser;
-
   const router = useRouter();
 
-  if (isLoggedIn) {
-    afterSignIn();
-  }
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        afterSignIn();
+      }
+    });
+  }, []);
 
   function afterSignIn() {
     router.push('/days');

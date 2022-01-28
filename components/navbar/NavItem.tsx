@@ -17,7 +17,6 @@ export default function NavItem({
 
   useEffect(() => {
     setActive(path.toLocaleLowerCase() === router.pathname.toLocaleLowerCase());
-    console.log(router.pathname, path, active);
   }, [router]);
 
   const style = `${
