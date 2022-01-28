@@ -4,6 +4,7 @@ import { useModalContext } from '../context/ModalContextProvider';
 import { useJournalContext } from '../context/JournalContextProvider';
 import { Feeling, JournalEntry } from '../models/Models';
 import { auth } from '../firebase/firebase-config';
+import { Timestamp } from 'firebase/firestore';
 
 export default function Create({ onClose }: { onClose: () => void }) {
   //*Context
@@ -30,7 +31,7 @@ export default function Create({ onClose }: { onClose: () => void }) {
   async function submit() {
     console.log('called submit');
     const data: JournalEntry = {
-      date: new Date(),
+      date: Timestamp.fromDate(new Date()),
       feelingName: feeling.name,
       uid: auth.currentUser.uid,
       why: why,

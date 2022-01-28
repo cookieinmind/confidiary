@@ -19,6 +19,7 @@ import {
   DocumentData,
   Unsubscribe,
   QuerySnapshot,
+  orderBy,
 } from 'firebase/firestore';
 
 import {
@@ -99,9 +100,9 @@ export default function JournalContextProvider({ children }) {
 
     const journalCollection = collection(db, JOURNALS_PATH);
     // const entriesQuery = query(journalCollection, where('uid', '==', user.uid));
-    const entriesQuery = query(journalCollection);
+    const entriesQuery = query(journalCollection, orderBy('date', 'desc'));
 
-    return onSnapshot(
+    onSnapshot(
       entriesQuery,
       (snapshot) => {
         console.log('called next on entries');
@@ -112,7 +113,7 @@ export default function JournalContextProvider({ children }) {
             feelingName: docData.feelingName,
             uid: docData.uid,
             why: docData.why,
-            date: new Date(docData.date),
+            date: docData.date,
           };
           entries.push(journalEntry);
         });
@@ -127,6 +128,7 @@ export default function JournalContextProvider({ children }) {
         setEntries([]);
       }
     );
+
     // setUnsubFromEntries(unsub);
   }
 
@@ -179,7 +181,7 @@ export default function JournalContextProvider({ children }) {
             feelingName: docData.feelingName,
             uid: docData.uid,
             why: docData.why,
-            date: new Date(docData.date),
+            date: docData.date,
           };
           entries.push(journalEntry);
         });
@@ -193,10 +195,9 @@ export default function JournalContextProvider({ children }) {
     }
 
     const dropAuthObserver = onAuthStateChanged(auth, (user) => {
-      // console.log('x');
       if (user) {
-        subscribeToUserFeelings(auth.currentUser);
-        subscribeToUserEntries(auth.currentUser);
+        subscribeToUserFeelings(user);
+        subscribeToUserEntries(user);
       } else unsubscribeToAll();
     });
 

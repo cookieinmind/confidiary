@@ -1,5 +1,7 @@
+import { Timestamp } from 'firebase/firestore';
+
 export type JournalEntry = {
-  date: Date;
+  date: Timestamp;
   feelingName: string;
   why?: string;
   uid: string;

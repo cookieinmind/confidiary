@@ -1,22 +1,17 @@
 import React from 'react';
 import Layout from '../components/Layouts/Layout';
 import ThoughtCard from '../components/cards/ThoughtCard';
-
-const dummyContent = {
-  day: '22/20/2022',
-  created: 'at 2pm',
-  why: 'IDK',
-  feeling: 'happy',
-};
+import { useJournalContext } from '../context/JournalContextProvider';
 
 export default function Thoughts() {
+  const { entries } = useJournalContext();
+
   return (
     <div>
       <div className="flex flex-col p-2 gap-4 h-screen">
-        <ThoughtCard thought={dummyContent} />
-        <ThoughtCard thought={dummyContent} />
-        <ThoughtCard thought={dummyContent} />
-        <ThoughtCard thought={dummyContent} />
+        {entries?.map((entry, i) => {
+          return <ThoughtCard entry={entry} key={i} />;
+        })}
       </div>
     </div>
   );

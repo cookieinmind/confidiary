@@ -26,7 +26,11 @@ export default function ThoughtCard({ entry }: { entry: JournalEntry }) {
     >
       <CardHeader
         feeling={entry.feelingName}
-        time={entry.date.getHours().toString()}
+        time={
+          entry.date.toDate().getHours().toString() +
+          ':' +
+          entry.date.toDate().getMinutes().toString()
+        }
         onClick={manageExpand}
         expanded={show}
       />
