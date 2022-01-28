@@ -62,7 +62,6 @@ export default function Days() {
         (x) => !_todayEntries.includes(x)
       );
       const _organizedEntries = organizeEntries(notTodayEntries);
-      console.table(_organizedEntries);
       setOganizedEntries(_organizedEntries);
     }
 
