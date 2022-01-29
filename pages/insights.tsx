@@ -93,7 +93,12 @@ export default function Insights() {
           className="flex justify-between p-4 items-center"
           onSubmit={change}
         >
-          <label htmlFor="notifyMe" className="body-base">
+          <label
+            htmlFor="notifyMe"
+            className={`body-base ${
+              isLoading ? 'opacity-10' : ''
+            } transition-opacity`}
+          >
             notify me when is ready
           </label>
           <input
