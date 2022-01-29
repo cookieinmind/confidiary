@@ -11,7 +11,7 @@ export default function Navbar() {
 
   return (
     <div className="w-full flex items-center justify-between py-2 px-4 bg-black text-surface">
-      <NavItem path="/days" label="days" icon="calendar_today" />
+      <NavItem path="/home" label="days" icon="calendar_today" />
       <NavItem path="/insights" label="insights" icon="insights" />
       <CreateButton onClick={manageCreation} />
       <NavItem path="/rankings" label="rankings" icon="star" />

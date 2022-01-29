@@ -18,7 +18,7 @@ export default function Home() {
   }, []);
 
   function afterSignIn() {
-    router.push('/days');
+    router.push('/home');
   }
 
   return <SignInPage afterSignIn={afterSignIn} />;
