@@ -3,7 +3,7 @@ import { createContext, useContext, useEffect, useState } from 'react';
 
 import { auth, firestore as db } from '../firebase/firebase-config';
 import { onAuthStateChanged, User } from 'firebase/auth';
-import { Feeling, JournalEntry } from '../models/Models';
+import { Feeling, JournalEntry } from '../components/utils/Models';
 import {
   addDoc,
   collection,

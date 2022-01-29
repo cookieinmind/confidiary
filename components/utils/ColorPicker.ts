@@ -1,4 +1,4 @@
-import { Feeling } from '../../models/Models';
+import { Feeling } from './Models';
 
 enum textValues {
   lust = 'text-lust',

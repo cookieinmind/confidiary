@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import OtherDayCard from '../components/cards/OtherDayCard';
 import TodayCard from '../components/cards/TodayCard';
-import Chipnav from '../components/ChipsNav';
 import Layout from '../components/Layouts/Layout';
-import { auth } from '../firebase/firebase-config';
 import {
   JournalDiccionary,
   useJournalContext,
 } from '../context/JournalContextProvider';
 import EntryCard from '../components/cards/EntryCard';
-import { Feeling, JournalEntry } from '../models/Models';
+import { JournalEntry } from '../components/utils/Models';
 
 export default function Days() {
   const {

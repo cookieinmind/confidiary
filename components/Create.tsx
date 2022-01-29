@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useJournalContext } from '../context/JournalContextProvider';
-import { Feeling, JournalEntry } from '../models/Models';
+import { Feeling, JournalEntry } from './utils/Models';
 import { auth } from '../firebase/firebase-config';
 import { Timestamp } from 'firebase/firestore';
 import Modal from './utils/Modal';

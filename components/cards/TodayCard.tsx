@@ -1,7 +1,7 @@
 import React from 'react';
 import { useJournalContext } from '../../context/JournalContextProvider';
 import { bgColorPicker, textColorPicker } from '../utils/ColorPicker';
-import { Feeling } from '../../models/Models';
+import { Feeling } from '../utils/Models';
 
 type TodayCardProps = {
   numOfEntries: number;

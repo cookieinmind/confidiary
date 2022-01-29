@@ -3,7 +3,7 @@ import Layout from '../components/Layouts/Layout';
 import { firestore, auth } from '../firebase/firebase-config';
 import { collection, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { USERS_TO_NOTIFY_PATH } from '../firebase/Paths';
-import { UserToNotify } from '../models/Models';
+import { UserToNotify } from '../components/utils/Models';
 import { FirebaseError } from 'firebase/app';
 
 export default function Rankings() {

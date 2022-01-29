@@ -12,7 +12,7 @@ import {
   where,
 } from 'firebase/firestore';
 import { USERS_FEELINGS_PATH, USERS_TO_NOTIFY_PATH } from '../firebase/Paths';
-import { UserToNotify } from '../models/Models';
+import { UserToNotify } from '../components/utils/Models';
 import { FirebaseError } from 'firebase/app';
 
 export default function Insights() {

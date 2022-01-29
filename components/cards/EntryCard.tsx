@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { JournalEntry } from '../../models/Models';
+import { JournalEntry } from '../utils/Models';
 import { bgColorPicker } from '../utils/ColorPicker';
 import { useJournalContext } from '../../context/JournalContextProvider';
 
