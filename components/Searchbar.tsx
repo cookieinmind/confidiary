@@ -18,6 +18,7 @@ export default function SearchBar() {
     <div className="w-full flex justify-around items-center py-2 pl-4 pr-2  rounded-full drop-shadow-3 bg-surface">
       <span className="material-icons">search</span>
       <input
+        type="text"
         placeholder="look through your feelings"
         className="body-base grow text-center "
         disabled={true}

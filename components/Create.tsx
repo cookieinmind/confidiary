@@ -153,7 +153,7 @@ function InputWihtSuggestions({
           className={`w-full p-4 ${
             isTying ? '' : 'border-outline border-2 rounded-xl'
           }`}
-          placeholder="anxious, proud, frustrated ..."
+          placeholder="amusement, joy, stressed..."
           onChange={handleTyping}
           autoComplete="off"
           onBlur={() => setIsTying(false)}
