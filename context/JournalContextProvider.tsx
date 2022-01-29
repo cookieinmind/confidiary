@@ -66,7 +66,6 @@ export default function JournalContextProvider({ children }) {
   }
 
   async function createEntry(newEntry: JournalEntry) {
-    console.log('called createEntry');
     try {
       const col = collection(db, JOURNALS_PATH);
       const response = await addDoc(col, newEntry);
@@ -77,7 +76,6 @@ export default function JournalContextProvider({ children }) {
 
   const subscribeToUserFeelings = (user: User): Unsubscribe => {
     if (!user) return;
-    console.log('sub to feelings on');
 
     const userFeelingsDoc = doc(collection(db, USERS_FEELINGS_PATH), user.uid);
     return onSnapshot(
@@ -85,11 +83,9 @@ export default function JournalContextProvider({ children }) {
       (snapshot) => {
         const feelingsInObject = snapshot.data();
         const feelingsInArray = Object.values(feelingsInObject);
-        console.log('Got the user feelings.');
         setFeelings(feelingsInArray);
       },
       (error) => {
-        console.log('Creating a user_doc for the user', error);
         //The user doesn't have feelings yet
         //we must create them.
         const defaultFeelingsCol = collection(db, DEFAULT_FEELINGS_PATH);
@@ -241,10 +237,6 @@ export default function JournalContextProvider({ children }) {
       unsubscribeToAll();
     };
   }, []);
-
-  useEffect(() => {
-    console.log('they changed');
-  }, [feelings, entries]);
 
   const state = {
     entries,

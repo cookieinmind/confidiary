@@ -28,16 +28,13 @@ export default function Insights() {
     setIsLoading(true);
     async function setValue() {
       try {
-        console.log('trying to grab');
         const col = collection(firestore, USERS_TO_NOTIFY_PATH);
         const d = doc(col, auth.currentUser.uid);
         const response = await getDoc(d);
         const { insights } = response.data() as UserToNotify;
         setNotifyMe(insights);
         inputRef.current.checked = insights;
-        console.log(response.data());
       } catch (error) {
-        console.log('couldnt grab');
         const col = collection(firestore, USERS_TO_NOTIFY_PATH);
         const d = doc(col, auth.currentUser.uid);
         const data: UserToNotify = {
@@ -46,7 +43,6 @@ export default function Insights() {
           insights: false,
         };
         const response = await setDoc(d, data);
-        console.log(response);
         setNotifyMe(false);
         inputRef.current.checked = false;
       }
@@ -54,17 +50,14 @@ export default function Insights() {
 
     async function updateValue() {
       try {
-        console.log('trying to update');
         const col = collection(firestore, USERS_TO_NOTIFY_PATH);
         const data: UserToNotify = {
           insights: notifyMe,
         };
         const response = await updateDoc(doc(col, auth.currentUser.uid), data);
-        console.log(response);
       } catch (error) {
         let e = error as FirebaseError;
         if (e.code === 'not-found') {
-          console.log('not found.');
           const col = collection(firestore, USERS_TO_NOTIFY_PATH);
 
           const data: UserToNotify = {
@@ -73,7 +66,6 @@ export default function Insights() {
             rankings: false,
           };
           const response = await setDoc(doc(col, auth.currentUser.uid), data);
-          console.log(response);
         } else console.error(error);
       }
     }

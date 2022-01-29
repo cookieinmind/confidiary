@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
 import { JournalEntry } from '../../models/Models';
-import { bgColorPicker, textColorPicker } from '../utils/ColorPicker';
+import { bgColorPicker } from '../utils/ColorPicker';
 import { useJournalContext } from '../../context/JournalContextProvider';
-
-const dummyText =
-  'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
 
 export default function EntryCard({ entry }: { entry: JournalEntry }) {
   const [show, setShow] = useState<boolean>(false);
@@ -37,8 +34,9 @@ export default function EntryCard({ entry }: { entry: JournalEntry }) {
         time={time}
         onClick={manageExpand}
         expanded={show}
+        showArrow={entry.why !== null}
       />
-      <CardContent content={entry.why} show={show} />
+      {entry.why && <CardContent content={entry.why} show={show} />}
     </article>
   );
 }
@@ -64,11 +62,13 @@ function CardHeader({
   feelingName,
   onClick,
   expanded,
+  showArrow,
 }: {
   time: string;
   feelingName: string;
   onClick: () => void;
   expanded: boolean;
+  showArrow: boolean;
 }) {
   const { findFeeling } = useJournalContext();
   const feeling = findFeeling(feelingName);
@@ -88,15 +88,17 @@ function CardHeader({
           <span className="font-bold text-onSurface">{feelingName}</span>
         </p>
       </div>
-      <button className="shrink-0 grid place-items-center">
-        <span
-          className={`material-icons shrink-0 transition-all ${
-            expanded ? 'rotate-180' : 'rotate-0'
-          }  `}
-        >
-          expand_more
-        </span>
-      </button>
+      {showArrow && (
+        <button className="shrink-0 grid place-items-center">
+          <span
+            className={`material-icons shrink-0 transition-all ${
+              expanded ? 'rotate-180' : 'rotate-0'
+            }  `}
+          >
+            expand_more
+          </span>
+        </button>
+      )}
     </header>
   );
 }

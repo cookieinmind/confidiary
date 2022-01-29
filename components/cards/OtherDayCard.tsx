@@ -39,8 +39,6 @@ function FeelingEntry({
   const bgColor = bgColorPicker(feeling);
   const textColor = textColorPicker(feeling);
 
-  console.log(textColor);
-
   return (
     <div className="flex justify-between items-center ">
       <span className={`text-sm font-bold ${textColor}`}>{feelingName}</span>
