@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { JournalEntry } from '../utils/Models';
 import { bgColorPicker } from '../utils/ColorPicker';
 import { useJournalContext } from '../../context/JournalContextProvider';
+import { DateTime } from 'luxon';
 
 export default function EntryCard({ entry }: { entry: JournalEntry }) {
   const [show, setShow] = useState<boolean>(false);
@@ -15,12 +16,8 @@ export default function EntryCard({ entry }: { entry: JournalEntry }) {
     show ? 'drop-shadow-2 h-fit' : 'drop-shadow-1 h-[73.5px]'
   }`;
 
-  const time =
-    entry.date.toDate().getHours().toString() +
-    ':' +
-    (entry.date.toDate().getMinutes() < 10
-      ? '0' + entry.date.toDate().getMinutes().toString()
-      : entry.date.toDate().getMinutes().toString());
+  const entryDate = DateTime.fromISO(entry.date);
+  const time = entryDate.toLocaleString(DateTime.TIME_SIMPLE);
 
   return (
     <article

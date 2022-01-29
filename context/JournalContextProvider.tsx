@@ -27,6 +27,7 @@ import {
   DEFAULT_FEELINGS_PATH,
   JOURNALS_PATH,
 } from '../firebase/Paths';
+import { DateTime } from 'luxon';
 
 export type JournalDiccionary = {
   [key: string]: JournalEntry[];
@@ -147,7 +148,6 @@ export default function JournalContextProvider({ children }) {
     onSnapshot(
       entriesQuery,
       (snapshot) => {
-        console.log('called next on entries');
         const entries: JournalEntry[] = [];
         snapshot.forEach((s) => {
           const docData = s.data();
@@ -159,10 +159,9 @@ export default function JournalContextProvider({ children }) {
           };
           entries.push(journalEntry);
         });
-
-        console.log('Got the user entries');
         setEntries(entries);
         setEntriesByDate(organizeEntries(entries));
+        console.log('updated the entries');
       },
       (error) => {
         console.error(error);
@@ -182,22 +181,24 @@ export default function JournalContextProvider({ children }) {
   }
 
   function organizeEntries(entries: JournalEntry[]): JournalDiccionary {
-    console.log('attempting to organize entries');
     if (!entries) return null;
     console.log('organizing entries');
     const result: JournalDiccionary = {};
 
-    const today = new Date().getTime();
+    // const today = new Date().getTime();
     entries.forEach((entry) => {
-      const diffInDays = Math.floor(
-        (today - entry.date.toDate().getTime()) / (1000 * 3600 * 24)
-      );
+      const entryDate = DateTime.fromISO(entry.date);
+
+      const diffInDays = Math.floor(Math.abs(entryDate.diffNow('days').days));
+
       const key =
         diffInDays > 0
           ? diffInDays === 1
             ? `Yesterday`
             : `${diffInDays} days ago`
           : 'Today';
+
+      console.log(diffInDays, key);
 
       if (result.hasOwnProperty(key)) {
         result[key].push(entry);
@@ -224,13 +225,6 @@ export default function JournalContextProvider({ children }) {
       unsubscribeToAll();
     };
   }, []);
-
-  useEffect(() => {
-    // console.log('run effect');
-    // if (!entries) return;
-    // console.log('updating entries by date');
-    // setEntriesByDate(organizeEntries(entries));
-  }, [entries]);
 
   const state = {
     entries,

@@ -5,6 +5,7 @@ import { auth } from '../firebase/firebase-config';
 import { Timestamp } from 'firebase/firestore';
 import Modal from './utils/Modal';
 import { bgColorPicker } from './utils/ColorPicker';
+import { DateTime } from 'luxon';
 
 export default function Create({ onClose }: { onClose: () => void }) {
   //*Context
@@ -31,7 +32,7 @@ export default function Create({ onClose }: { onClose: () => void }) {
   async function submit() {
     console.log('called submit');
     const data: JournalEntry = {
-      date: Timestamp.fromDate(new Date()),
+      date: DateTime.now().toISO(),
       feelingName: feeling.name,
       uid: auth.currentUser.uid,
       why: why,

@@ -10,27 +10,14 @@ import EntryCard from '../components/cards/EntryCard';
 import { JournalEntry } from '../components/utils/Models';
 
 export default function Home() {
-  const { entriesByDate, isLoading } = useJournalContext();
+  const { entriesByDate, isLoading: isFetchingData } = useJournalContext();
   const [todayEntries, setTodayEntries] = useState<JournalEntry[]>();
   const [notTodaysEntries, setNotTodaysEntries] = useState<JournalDiccionary>();
 
-  function getTodayEntres(entries: JournalEntry[]): JournalEntry[] {
-    const isToday = (someDate: Date) => {
-      const today = new Date();
-      return (
-        someDate.getDate() == today.getDate() &&
-        someDate.getMonth() == today.getMonth() &&
-        someDate.getFullYear() == today.getFullYear()
-      );
-    };
-    const results = entries.filter((entry) => isToday(entry.date.toDate()));
-    console.log(results);
-    return results;
-  }
-
   function filterTodaysEntries(all: JournalDiccionary): JournalDiccionary {
     if (!all) return null;
-    const copy: JournalDiccionary = null;
+
+    let copy: JournalDiccionary = { deleteme: null };
 
     const arrayOfKeys = Object.keys(all);
 
@@ -40,6 +27,8 @@ export default function Home() {
         copy[key] = value;
       }
     }
+
+    delete copy['deleteme'];
 
     return copy;
   }
@@ -72,11 +61,9 @@ export default function Home() {
       <div className="flex flex-col p-2 gap-4">
         {/* <Chipnav options={options} /> */}
 
-        {!isLoading && todayEntries && (
-          <ShowTodaysCard entries={todayEntries} />
-        )}
+        {!isFetchingData && <ShowTodaysCard entries={todayEntries} />}
 
-        {!isLoading &&
+        {!isFetchingData &&
           notTodaysEntries &&
           Object.keys(notTodaysEntries).map((day, i) => {
             let entriesPerDay = notTodaysEntries[day] as JournalEntry[];
@@ -91,11 +78,11 @@ export default function Home() {
 }
 
 function ShowTodaysCard({ entries }: { entries: JournalEntry[] }) {
-  const numOfEntries = entries.length;
+  const numOfEntries = entries ? entries.length : 0;
 
   const entriesPerFeeling: { feeling: string; entries: number }[] = [];
 
-  entries.forEach((entry) => {
+  entries?.forEach((entry) => {
     const feelingEntry = entriesPerFeeling.filter(
       (el) => el.feeling === entry.feelingName
     )[0];
@@ -124,6 +111,7 @@ function ShowOtherDayCard({
   date: string;
   entries: JournalEntry[];
 }) {
+  console.log(date, entries);
   const numOfEntries = entries.length;
 
   const entriesPerFeeling: { feeling: string; entries: number }[] = [];
