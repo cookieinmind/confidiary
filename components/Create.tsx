@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useJournalContext } from '../context/JournalContextProvider';
 import { Feeling, JournalEntry } from './utils/Models';
 import { auth } from '../firebase/firebase-config';
-import { Timestamp } from 'firebase/firestore';
+import { useRouter } from 'next/router';
 import Modal from './utils/Modal';
 import { bgColorPicker } from './utils/ColorPicker';
 import { DateTime } from 'luxon';
@@ -13,6 +13,7 @@ export default function Create({ onClose }: { onClose: () => void }) {
 
   //*UI
   const [canSubmit, setCanSubmit] = useState<boolean>(false);
+  const router = useRouter();
 
   //*Form
   const [feeling, setFeeling] = useState<Feeling>(null);
@@ -38,6 +39,7 @@ export default function Create({ onClose }: { onClose: () => void }) {
       why: why,
     };
     createEntry(data);
+    router.push('/entries');
     onClose();
   }
 
