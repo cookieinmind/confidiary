@@ -59,9 +59,10 @@ export default function JournalContextProvider({ children }) {
   //*State
   const [feelings, setFeelings] = useState<Feeling[]>();
   const [entries, setEntries] = useState<JournalEntry[]>();
+  const [entriesByDate, setEntriesByDate] = useState<JournalDiccionary>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  //*Functions
+  //*Methods
   function findFeeling(feelingName: string): Feeling {
     if (!feelings) return;
     return feelings.filter(
@@ -185,11 +186,15 @@ export default function JournalContextProvider({ children }) {
 
     const today = new Date().getTime();
     entries.forEach((entry) => {
-      const diffInDays = Math.round(
+      const diffInDays = Math.floor(
         (today - entry.date.toDate().getTime()) / (1000 * 3600 * 24)
       );
-
-      const key = diffInDays > 1 ? `${diffInDays} days ago` : 'Yesterday';
+      const key =
+        diffInDays > 0
+          ? diffInDays === 1
+            ? `Yesterday`
+            : `${diffInDays} days ago`
+          : 'Today';
 
       if (result.hasOwnProperty(key)) {
         result[key].push(entry);
@@ -217,11 +222,16 @@ export default function JournalContextProvider({ children }) {
     };
   }, []);
 
+  useEffect(() => {
+    if (!entries) return;
+    setEntriesByDate(organizeEntries(entries));
+  }, [entries]);
+
   const state = {
     entries,
     feelings,
     createEntry,
-    entriesByDate: organizeEntries(entries),
+    entriesByDate,
     findFeeling,
     isLoading,
   };

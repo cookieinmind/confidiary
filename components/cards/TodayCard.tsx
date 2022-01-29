@@ -18,13 +18,14 @@ export default function TodayCard({
     <article className="drop-shadow-2 rounded-lg  bg-surface overflow-hidden">
       <CardHeader number={numOfEntries} />
       <div className="flex flex-col gap-4 p-4">
-        {entriesPerFeeling?.map((e, i) => {
-          return (
-            <FeelingEntry key={i} feeling={e.feeling} number={e.entries} />
-          );
-        })}
+        {entriesPerFeeling?.length > 0 &&
+          entriesPerFeeling?.map((e, i) => {
+            return (
+              <FeelingEntry key={i} feeling={e.feeling} number={e.entries} />
+            );
+          })}
 
-        {!entriesPerFeeling && (
+        {entriesPerFeeling?.length < 1 && (
           <h3 className="title-lg opacity-50 text-center">
             You haven't added any entries to your journal.
           </h3>

@@ -33,6 +33,8 @@ export default function Home() {
   function filterTodaysEntries(all: JournalDiccionary): JournalDiccionary {
     if (!all) return null;
 
+    console.log(all);
+
     const copy = all;
 
     delete copy['Today'];
