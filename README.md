@@ -3,3 +3,5 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 ## Sinner Journal
 
 Is a simple app to log your thoughts and feelings throughout the day. 
+
+[Try it out >](http://sinner-journal.vercel.app/)
