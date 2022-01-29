@@ -9,12 +9,8 @@ import {
 import EntryCard from '../components/cards/EntryCard';
 import { JournalEntry } from '../components/utils/Models';
 
-export default function Days() {
-  const {
-    feelings,
-    entries: entriesFromServer,
-    entriesByDate,
-  } = useJournalContext();
+export default function Home() {
+  const { entries: entriesFromServer, entriesByDate } = useJournalContext();
   const [todayEntries, setTodayEntries] = useState<JournalEntry[]>();
   const [notTodaysEntries, setNotTodaysEntries] = useState<JournalDiccionary>();
 
@@ -138,6 +134,6 @@ function ShowOtherDayCard({
   );
 }
 
-Days.getLayout = function getLayout(page) {
+Home.getLayout = function getLayout(page) {
   return <Layout>{page}</Layout>;
 };
