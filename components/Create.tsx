@@ -122,7 +122,7 @@ function InputWihtSuggestions({
       return;
     }
     const newFilter = suggestedFeelings.filter((value) => {
-      return value.name.includes(typed);
+      return value.name.includes(typed.toLowerCase());
     });
     setFilteredData(newFilter);
   }
