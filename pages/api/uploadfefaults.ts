@@ -2,7 +2,7 @@
 //   admin_auth as auth,
 //   admin_firestore as db,
 // } from '../../firebase/firebase-admin-config';
-import Data from './data.json';
+// import Data from './data.json';
 
 export default async function handler(req, res) {
   return res.status(200).json({ status: '' });
