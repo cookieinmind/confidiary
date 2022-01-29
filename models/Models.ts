@@ -33,3 +33,9 @@ export type Feeling = {
     wrath: number;
   }[];
 };
+
+export type UserToNotify = {
+  edits?: boolean;
+  insights?: boolean;
+  rankings?: boolean;
+};

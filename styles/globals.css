@@ -16,10 +16,12 @@
   input,
   textarea {
     background-color: rgba(0, 0, 0, 0%);
+    @apply border-0;
   }
 
   textarea:focus,
   input:focus {
+    @apply border-0;
     outline: none;
   }
 }
