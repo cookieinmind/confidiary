@@ -32,7 +32,7 @@ function ProfilePhoto({ user }) {
 
   return (
     <div>
-      <button onClick={() => setLogOut(true)}>
+      <button onClick={() => setLogOut(true)} className="center">
         <Image
           src={user?.photoURL}
           height={32}

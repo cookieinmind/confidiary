@@ -38,6 +38,7 @@ type ModalContextState = {
   feelings: Feeling[];
   createEntry: (newEntry: JournalEntry) => Promise<void>;
   findFeeling: (feelingName: string) => Feeling;
+  isLoading: boolean;
 };
 
 const journalContext = createContext<ModalContextState>({
@@ -46,6 +47,7 @@ const journalContext = createContext<ModalContextState>({
   entriesByDate: null,
   createEntry: async (newEntry: JournalEntry) => {},
   findFeeling: (feelingName: string) => null,
+  isLoading: true,
 });
 
 export const useJournalContext = () => {
@@ -57,9 +59,11 @@ export default function JournalContextProvider({ children }) {
   //*State
   const [feelings, setFeelings] = useState<Feeling[]>();
   const [entries, setEntries] = useState<JournalEntry[]>();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   //*Functions
   function findFeeling(feelingName: string): Feeling {
+    if (!feelings) return;
     return feelings.filter(
       (f) => f.name.toLocaleLowerCase() === feelingName.toLocaleLowerCase()
     )[0];
@@ -69,6 +73,7 @@ export default function JournalContextProvider({ children }) {
     try {
       const col = collection(db, JOURNALS_PATH);
       const response = await addDoc(col, newEntry);
+      console.log(response);
     } catch (error) {
       console.error(error);
     }
@@ -81,11 +86,32 @@ export default function JournalContextProvider({ children }) {
     return onSnapshot(
       userFeelingsDoc,
       (snapshot) => {
-        const feelingsInObject = snapshot.data();
-        const feelingsInArray = Object.values(feelingsInObject);
-        setFeelings(feelingsInArray);
+        try {
+          setIsLoading(true);
+          const feelingsInObject = snapshot.data();
+          if (!feelingsInObject)
+            throw new Error("The user doesn't have an entry");
+          const feelingsInArray = Object.values(feelingsInObject);
+          setFeelings(feelingsInArray);
+          setIsLoading(false);
+        } catch (error) {
+          console.error(error);
+          const defaultFeelingsCol = collection(db, DEFAULT_FEELINGS_PATH);
+          getDoc(doc(defaultFeelingsCol, 'default')).then((docRef) => {
+            const feelingsInObject = docRef.data();
+            const feelingsInArray = Object.values(feelingsInObject);
+
+            //create a doc for the user
+            setFeelings(feelingsInArray);
+            setDoc(userFeelingsDoc, feelingsInObject).then(() => {
+              console.log('added defaults to the user');
+              setIsLoading(false);
+            });
+          });
+        }
       },
       (error) => {
+        console.error(error);
         //The user doesn't have feelings yet
         //we must create them.
         const defaultFeelingsCol = collection(db, DEFAULT_FEELINGS_PATH);
@@ -95,9 +121,10 @@ export default function JournalContextProvider({ children }) {
 
           //create a doc for the user
           setFeelings(feelingsInArray);
-          setDoc(userFeelingsDoc, feelingsInObject).then(() =>
-            console.log('added defaults to the user')
-          );
+          setDoc(userFeelingsDoc, feelingsInObject).then(() => {
+            console.log('added defaults to the user');
+            setIsLoading(false);
+          });
         });
       }
     );
@@ -108,8 +135,13 @@ export default function JournalContextProvider({ children }) {
     console.log('sub to entries on');
 
     const journalCollection = collection(db, JOURNALS_PATH);
-    // const entriesQuery = query(journalCollection, where('uid', '==', user.uid));
-    const entriesQuery = query(journalCollection, orderBy('date', 'desc'));
+    const entriesQuery = query(
+      journalCollection,
+      where('uid', '==', user.uid),
+      orderBy('date', 'desc')
+    );
+
+    console.log();
 
     onSnapshot(
       entriesQuery,
@@ -131,9 +163,7 @@ export default function JournalContextProvider({ children }) {
         setEntries(entries);
       },
       (error) => {
-        console.log('onerrror called');
         console.error(error);
-        console.error('The user has no entries');
         setEntries([]);
       }
     );
@@ -173,58 +203,7 @@ export default function JournalContextProvider({ children }) {
 
   //*Effects
   useEffect(() => {
-    async function setUpUserFeelings(user: User) {
-      const usersFeelingsColRef = collection(db, USERS_FEELINGS_PATH);
-      try {
-        const docRef = doc(usersFeelingsColRef, user.uid);
-        const actualDoc = await getDoc(docRef);
-
-        const feelingsInObject = actualDoc.data();
-        const feelingsInArray = Object.values(feelingsInObject);
-        setFeelings(feelingsInArray);
-      } catch (error) {
-        console.error('Creating a user_doc for the user');
-        //The user doesn't have feelings yet
-        //we must create them.
-        const defaultFeelingsCol = collection(db, DEFAULT_FEELINGS_PATH);
-        const docRef = await getDoc(doc(defaultFeelingsCol, 'default'));
-        const feelingsInObject = docRef.data();
-        const feelingsInArray = Object.values(feelingsInObject);
-
-        //create a doc for the user
-        setFeelings(feelingsInArray);
-        await setDoc(doc(usersFeelingsColRef, user.uid), feelingsInObject);
-      } finally {
-        console.log('Setted up the user feelings.');
-      }
-    }
-
-    async function setUpUserEntries(user: User) {
-      try {
-        const journalCollection = collection(db, JOURNALS_PATH);
-        const q = query(journalCollection, where('uid', '==', user.uid));
-        const snapshot = await getDocs(q);
-
-        const entries: JournalEntry[] = [];
-        snapshot.forEach((s) => {
-          const docData = s.data();
-          const journalEntry: JournalEntry = {
-            feelingName: docData.feelingName,
-            uid: docData.uid,
-            why: docData.why,
-            date: new docData.date(),
-          };
-          entries.push(journalEntry);
-        });
-
-        console.log('Setted up the user entries');
-        setEntries(entries);
-      } catch (error) {
-        console.error('The user has no entries');
-        setEntries([]);
-      }
-    }
-
+    console.log('running effect');
     const dropAuthObserver = onAuthStateChanged(auth, (user) => {
       if (user) {
         subscribeToUserFeelings(user);
@@ -244,6 +223,7 @@ export default function JournalContextProvider({ children }) {
     createEntry,
     entriesByDate: organizeEntries(entries),
     findFeeling,
+    isLoading,
   };
 
   return (

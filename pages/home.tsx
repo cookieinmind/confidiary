@@ -10,7 +10,11 @@ import EntryCard from '../components/cards/EntryCard';
 import { JournalEntry } from '../components/utils/Models';
 
 export default function Home() {
-  const { entries: entriesFromServer, entriesByDate } = useJournalContext();
+  const {
+    entries: entriesFromServer,
+    entriesByDate,
+    isLoading,
+  } = useJournalContext();
   const [todayEntries, setTodayEntries] = useState<JournalEntry[]>();
   const [notTodaysEntries, setNotTodaysEntries] = useState<JournalDiccionary>();
 
@@ -58,9 +62,12 @@ export default function Home() {
       <div className="flex flex-col p-2 gap-4">
         {/* <Chipnav options={options} /> */}
 
-        {todayEntries && <ShowTodaysCard entries={todayEntries} />}
+        {!isLoading && todayEntries && (
+          <ShowTodaysCard entries={todayEntries} />
+        )}
 
-        {notTodaysEntries &&
+        {!isLoading &&
+          notTodaysEntries &&
           Object.keys(notTodaysEntries).map((day, i) => {
             let entriesPerDay = notTodaysEntries[day] as JournalEntry[];
 

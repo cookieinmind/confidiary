@@ -23,6 +23,12 @@ export default function TodayCard({
             <FeelingEntry key={i} feeling={e.feeling} number={e.entries} />
           );
         })}
+
+        {!entriesPerFeeling && (
+          <h3 className="title-lg opacity-50 text-center">
+            You haven't added any entries to your journal.
+          </h3>
+        )}
       </div>
     </article>
   );

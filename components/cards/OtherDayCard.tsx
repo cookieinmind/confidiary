@@ -1,6 +1,6 @@
 import React from 'react';
 import { useJournalContext } from '../../context/JournalContextProvider';
-import { bgColorPicker, textColorPicker } from '../utils/ColorPicker';
+import { textColorPicker } from '../utils/ColorPicker';
 
 type CardProps = {
   date: string;
@@ -36,7 +36,6 @@ function FeelingEntry({
 }) {
   const { findFeeling } = useJournalContext();
   const feeling = findFeeling(feelingName);
-  const bgColor = bgColorPicker(feeling);
   const textColor = textColorPicker(feeling);
 
   return (

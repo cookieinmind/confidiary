@@ -92,14 +92,17 @@ export default function Rankings() {
           >
             notify me when is ready
           </label>
-          <input
-            type="checkbox"
-            name="notifyMe"
-            ref={inputRef}
-            disabled={isLoading}
-            onChange={(newVal) => setNotifyMe(newVal.target.checked)}
-            className="text-black rounded focus:ring-black focus:ring-opacity-10 ring-1 disabled:text-disabled disabled:cursor-none"
-          />
+
+          {!isLoading && (
+            <input
+              type="checkbox"
+              name="notifyMe"
+              ref={inputRef}
+              disabled={isLoading}
+              onChange={(newVal) => setNotifyMe(newVal.target.checked)}
+              className="text-black rounded focus:ring-black focus:ring-opacity-10 ring-1 disabled:text-disabled disabled:cursor-none"
+            />
+          )}
         </form>
       </article>
     </div>
