@@ -52,7 +52,7 @@ export default function Create({ onClose }: { onClose: () => void }) {
       />
 
       {/* Spacing*/}
-      <div className="z-20 fixed top-1/2 left-1/2 translate-y-[-50%] translate-x-[-50%] w-screen px-2 ">
+      <div className="z-20 fixed top-10 left-1/2  translate-x-[-50%] w-screen px-2 ">
         {/* Container */}
         <form
           className="bg-surface text-onSurface rounded-xl drop-shadow-5 flex flex-col gap-8 py-8 px-4"
@@ -69,7 +69,7 @@ export default function Create({ onClose }: { onClose: () => void }) {
           {/* Buttons */}
           <div className="flex gap-16 justify-center">
             <FormButton icon="close" onClick={onClose} color="text-error" />
-            <FormButton icon="add" onClick={submit} active={canSubmit} />
+            <FormButton icon="save" onClick={submit} active={canSubmit} />
           </div>
         </form>
       </div>
