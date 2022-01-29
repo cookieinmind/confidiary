@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { useJournalContext } from '../../context/JournalContextProvider';
-import { bgColorPicker, textColorPicker } from '../utils/ColorPicker';
-import { Feeling } from '../utils/Models';
+import { textColorPicker } from '../utils/ColorPicker';
 
 type TodayCardProps = {
   numOfEntries: number;
@@ -49,7 +48,6 @@ function FeelingEntry({
 }) {
   const { findFeeling } = useJournalContext();
   const feeling = findFeeling(feelingName);
-  const bgColor = bgColorPicker(feeling);
   const textColor = textColorPicker(feeling);
 
   return (

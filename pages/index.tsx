@@ -53,9 +53,16 @@ function SignInPage({ afterSignIn }: { afterSignIn: () => void }) {
       </main>
 
       <footer className="absolute bottom-10">
-        <button onClick={() => console.error('Connect this to Github')}>
-          {'about >'}
-        </button>
+        <a
+          href="https://github.com/juanc212/sinner-journal"
+          target="_black"
+          className="group flex gap-1 items-center"
+        >
+          <span className="group-hover:underline">about</span>
+          <span className="transition-transform group-hover:translate-x-1">
+            {'>'}
+          </span>
+        </a>
       </footer>
     </div>
   );
