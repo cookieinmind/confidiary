@@ -32,12 +32,16 @@ export default function Home() {
 
   function filterTodaysEntries(all: JournalDiccionary): JournalDiccionary {
     if (!all) return null;
+    const copy: JournalDiccionary = null;
 
-    console.log(all);
+    const arrayOfKeys = Object.keys(all);
 
-    const copy = all;
-
-    delete copy['Today'];
+    for (const key of arrayOfKeys) {
+      const value = all[key];
+      if (key !== 'Today') {
+        copy[key] = value;
+      }
+    }
 
     return copy;
   }

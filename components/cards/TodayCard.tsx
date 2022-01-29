@@ -25,7 +25,7 @@ export default function TodayCard({
             );
           })}
 
-        {entriesPerFeeling?.length < 1 && (
+        {numOfEntries < 1 && (
           <h3 className="title-lg opacity-50 text-center">
             You haven't added any entries to your journal.
           </h3>

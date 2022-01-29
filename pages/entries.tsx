@@ -1,10 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Layout from '../components/Layouts/Layout';
 import EntryCard from '../components/cards/EntryCard';
 import { useJournalContext } from '../context/JournalContextProvider';
 
 export default function Entries() {
   const { entriesByDate } = useJournalContext();
+
+  useEffect(() => {
+    console.log(entriesByDate);
+  }, [entriesByDate]);
 
   return (
     <div>

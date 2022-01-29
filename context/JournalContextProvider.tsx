@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { createContext, useContext, useEffect, useState } from 'react';
 
 import { auth, firestore as db } from '../firebase/firebase-config';
@@ -162,6 +162,7 @@ export default function JournalContextProvider({ children }) {
 
         console.log('Got the user entries');
         setEntries(entries);
+        setEntriesByDate(organizeEntries(entries));
       },
       (error) => {
         console.error(error);
@@ -181,7 +182,9 @@ export default function JournalContextProvider({ children }) {
   }
 
   function organizeEntries(entries: JournalEntry[]): JournalDiccionary {
+    console.log('attempting to organize entries');
     if (!entries) return null;
+    console.log('organizing entries');
     const result: JournalDiccionary = {};
 
     const today = new Date().getTime();
@@ -223,8 +226,10 @@ export default function JournalContextProvider({ children }) {
   }, []);
 
   useEffect(() => {
-    if (!entries) return;
-    setEntriesByDate(organizeEntries(entries));
+    // console.log('run effect');
+    // if (!entries) return;
+    // console.log('updating entries by date');
+    // setEntriesByDate(organizeEntries(entries));
   }, [entries]);
 
   const state = {
