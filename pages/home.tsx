@@ -10,11 +10,7 @@ import EntryCard from '../components/cards/EntryCard';
 import { JournalEntry } from '../components/utils/Models';
 
 export default function Home() {
-  const {
-    entries: entriesFromServer,
-    entriesByDate,
-    isLoading,
-  } = useJournalContext();
+  const { entriesByDate, isLoading } = useJournalContext();
   const [todayEntries, setTodayEntries] = useState<JournalEntry[]>();
   const [notTodaysEntries, setNotTodaysEntries] = useState<JournalDiccionary>();
 
@@ -27,7 +23,9 @@ export default function Home() {
         someDate.getFullYear() == today.getFullYear()
       );
     };
-    return entries.filter((entry) => isToday(entry.date.toDate()));
+    const results = entries.filter((entry) => isToday(entry.date.toDate()));
+    console.log(results);
+    return results;
   }
 
   function filterTodaysEntries(all: JournalDiccionary): JournalDiccionary {
@@ -46,11 +44,17 @@ export default function Home() {
     return copy;
   }
 
+  function pickTodaysEntries(all: JournalDiccionary): JournalEntry[] {
+    if (all.hasOwnProperty('Today')) {
+      return all['Today'];
+    } else return undefined;
+  }
+
   useEffect(() => {
     function setUpEntries() {
-      if (!entriesFromServer) return;
+      if (!entriesByDate) return;
       //Today
-      const _todayEntries = getTodayEntres(entriesFromServer);
+      const _todayEntries = pickTodaysEntries(entriesByDate);
       setTodayEntries(_todayEntries);
 
       //Every other one
@@ -59,9 +63,9 @@ export default function Home() {
     }
 
     setUpEntries();
-  }, [entriesFromServer]);
+  }, [entriesByDate]);
 
-  if (!entriesFromServer) return <span>Loading...</span>;
+  if (!entriesByDate) return <span>Loading...</span>;
 
   return (
     <div>

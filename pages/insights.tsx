@@ -42,9 +42,11 @@ export default function Insights() {
           rankings: false,
           insights: false,
         };
-        const response = await setDoc(d, data);
+        await setDoc(d, data);
         setNotifyMe(false);
-        inputRef.current.checked = false;
+        if (inputRef && inputRef.current) {
+          inputRef.current.checked = false;
+        }
       }
     }
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useJournalContext } from '../../context/JournalContextProvider';
 import { bgColorPicker, textColorPicker } from '../utils/ColorPicker';
 import { Feeling } from '../utils/Models';
@@ -14,6 +14,11 @@ export default function TodayCard({
 }: TodayCardProps) {
   //todays entries
   //all the feelings and how many entries per feeling
+
+  useEffect(() => {
+    console.log(numOfEntries, entriesPerFeeling);
+  }, [numOfEntries, entriesPerFeeling]);
+
   return (
     <article className="drop-shadow-2 rounded-lg  bg-surface overflow-hidden">
       <CardHeader number={numOfEntries} />
