@@ -7,6 +7,9 @@ type UnsubFromEvents = () => void;
 const KEY_FEELINGS = 'feelings';
 const KEY_ENTRIES = 'entries';
 
+let entriesChanged: () => void = null;
+let feelingsChanged: () => void = null; //! do not delete
+
 function setObject(key: string, value: Object) {
   localStorage.setItem(key, JSON.stringify(value));
 }
@@ -30,6 +33,7 @@ async function createEntry(newEntry: JournalEntry) {
     const newEntries = [...oldEntries, newEntry];
     setObject(KEY_ENTRIES, newEntries);
     console.log('saved an entry in local storage');
+    entriesChanged();
   } catch (error) {
     console.error(error);
   }
@@ -48,7 +52,7 @@ function subscribeToUserFeelings(
   }
   try {
     getFeelings();
-    window.addEventListener('storage', getFeelings);
+    feelingsChanged = getFeelings;
   } catch (error) {
     if (error instanceof TypeError) {
       console.log('Setting the default feeling keys');
@@ -62,7 +66,7 @@ function subscribeToUserFeelings(
     }
   }
 
-  return () => window.removeEventListener('storage', getFeelings);
+  return () => (feelingsChanged = null);
 }
 
 function subscribeToUserEntries(
@@ -70,7 +74,8 @@ function subscribeToUserEntries(
   setEntries: (val: JournalEntry[]) => void,
   setEntriesByDate: (val: JournalDiccionary) => void
 ): UnsubFromEvents {
-  const getEntries = () => {
+  const getEntries = (e?: any) => {
+    console.log(e);
     console.log('called to update the entries');
     setIsLoading(true);
     const entries: JournalEntry[] = [];
@@ -86,7 +91,7 @@ function subscribeToUserEntries(
 
   try {
     getEntries();
-    window.addEventListener('storage', getEntries);
+    entriesChanged = getEntries;
   } catch (error) {
     if (error instanceof TypeError) {
       console.log('Setting the default entries keys');
@@ -100,7 +105,7 @@ function subscribeToUserEntries(
     }
   }
 
-  return () => window.removeEventListener('storage', getEntries);
+  return () => (entriesChanged = null);
 }
 
 function organizeEntries(entries: JournalEntry[]): JournalDiccionary {
