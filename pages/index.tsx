@@ -77,7 +77,7 @@ export default function Home() {
   );
 }
 
-function SignInWithGoogleButton({
+export function SignInWithGoogleButton({
   openPopUp,
 }: {
   openPopUp: () => Promise<void>;
@@ -85,7 +85,7 @@ function SignInWithGoogleButton({
   return (
     <button
       onClick={openPopUp}
-      className="bg-blue-500 text-white rounded-md py-4  pr-8 pl-4 text-xl w-fit border-onSurface border-2 flex items-center  gap-4"
+      className="rounded-md py-4  pr-8 pl-4 text-xl w-fit border-onSurface border-2 flex items-center  gap-4"
     >
       <figure className="aspect-square h-[16px] center">
         <Image src="/google-logo.svg" height={16} width={16} />
