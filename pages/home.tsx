@@ -53,7 +53,8 @@ export default function Home() {
     setUpEntries();
   }, [entriesByDate]);
 
-  if (!entriesByDate) return <span>Loading...</span>;
+  if (isFetchingData) return <span>Loading...</span>;
+  if (!notTodaysEntries) return <span>There's no entries</span>;
 
   return (
     <div>

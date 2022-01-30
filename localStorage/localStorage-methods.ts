@@ -50,13 +50,15 @@ function subscribeToUserFeelings(
     setIsLoading(false);
     console.log('updated the feelings');
   }
+
+  feelingsChanged = getFeelings;
   try {
     getFeelings();
-    feelingsChanged = getFeelings;
   } catch (error) {
     if (error instanceof TypeError) {
       console.log('Setting the default feeling keys');
       setObject(KEY_FEELINGS, []);
+      feelingsChanged();
     } else {
       console.log(error.type);
       console.error(
@@ -74,8 +76,7 @@ function subscribeToUserEntries(
   setEntries: (val: JournalEntry[]) => void,
   setEntriesByDate: (val: JournalDiccionary) => void
 ): UnsubFromEvents {
-  const getEntries = (e?: any) => {
-    console.log(e);
+  const getEntries = () => {
     console.log('called to update the entries');
     setIsLoading(true);
     const entries: JournalEntry[] = [];
@@ -89,13 +90,14 @@ function subscribeToUserEntries(
     setIsLoading(false);
   };
 
+  entriesChanged = getEntries;
   try {
     getEntries();
-    entriesChanged = getEntries;
   } catch (error) {
     if (error instanceof TypeError) {
       console.log('Setting the default entries keys');
       setObject(KEY_ENTRIES, []);
+      entriesChanged();
     } else {
       console.log(error.type);
       console.error(
