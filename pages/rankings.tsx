@@ -84,30 +84,40 @@ export default function Rankings() {
           <h1 className="title-base">rankings are in development</h1>
         </header>
 
-        <form
-          className="flex justify-between p-4 items-center"
-          onSubmit={change}
-        >
-          <label
-            htmlFor="notifyMe"
-            className={`body-base ${
-              isLoading ? 'opacity-10' : ''
-            } transition-opacity`}
+        {storageType === StorageType.Firebase && (
+          <form
+            className="flex justify-between p-4 items-center"
+            onSubmit={change}
           >
-            notify me when is ready
-          </label>
+            <label
+              htmlFor="notifyMe"
+              className={`body-base ${
+                isLoading ? 'opacity-10' : ''
+              } transition-opacity`}
+            >
+              notify me when is ready
+            </label>
+            {!isLoading && (
+              <input
+                type="checkbox"
+                name="notifyMe"
+                ref={inputRef}
+                disabled={isLoading}
+                onChange={(newVal) => setNotifyMe(newVal.target.checked)}
+                className="text-black rounded focus:ring-black focus:ring-opacity-10 ring-1 disabled:text-disabled disabled:cursor-none"
+              />
+            )}
+          </form>
+        )}
 
-          {!isLoading && (
-            <input
-              type="checkbox"
-              name="notifyMe"
-              ref={inputRef}
-              disabled={isLoading}
-              onChange={(newVal) => setNotifyMe(newVal.target.checked)}
-              className="text-black rounded focus:ring-black focus:ring-opacity-10 ring-1 disabled:text-disabled disabled:cursor-none"
-            />
-          )}
-        </form>
+        {storageType === StorageType.Local && (
+          <div className="flex justify-between p-4 items-center">
+            <p className="body-base">
+              if you want to be notified when this feature is ready, log in with
+              an account.
+            </p>
+          </div>
+        )}
       </article>
     </div>
   );
