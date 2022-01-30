@@ -22,22 +22,15 @@ function getObject(key: string) {
   }
 }
 
-function setKeys() {
-  console.log('Setting the default keys');
-  setObject(KEY_FEELINGS, []);
-  setObject(KEY_ENTRIES, []);
-}
-
 //*Public
 
 async function createEntry(newEntry: JournalEntry) {
   try {
-    console.log('hereA');
     const oldEntries = getObject(KEY_ENTRIES) as JournalEntry[];
     const newEntries = [...oldEntries, newEntry];
     setObject(KEY_ENTRIES, newEntries);
+    console.log('saved an entry in local storage');
   } catch (error) {
-    console.log('hereB');
     console.error(error);
   }
 }
@@ -77,7 +70,8 @@ function subscribeToUserEntries(
   setEntries: (val: JournalEntry[]) => void,
   setEntriesByDate: (val: JournalDiccionary) => void
 ): UnsubFromEvents {
-  function getEntries() {
+  const getEntries = () => {
+    console.log('called to update the entries');
     setIsLoading(true);
     const entries: JournalEntry[] = [];
     const entriesFromStorage = getObject(KEY_ENTRIES) as JournalEntry[];
@@ -88,7 +82,7 @@ function subscribeToUserEntries(
     setEntriesByDate(organizeEntries(entries));
     console.log('updated the entries');
     setIsLoading(false);
-  }
+  };
 
   try {
     getEntries();
@@ -130,13 +124,17 @@ function organizeEntries(entries: JournalEntry[]): JournalDiccionary {
           : `${diffInDays} days ago`
         : 'Today';
 
-    console.log(diffInDays, key);
-
     if (result.hasOwnProperty(key)) {
       result[key].push(entry);
     } else {
       result[key] = [entry];
     }
+
+    result[key] = result[key].sort((entryA, entryB) => {
+      const dateA = DateTime.fromISO(entryA.date);
+      const dateB = DateTime.fromISO(entryB.date);
+      return dateB.diff(dateA).as('millisecond');
+    });
   });
 
   return result;
