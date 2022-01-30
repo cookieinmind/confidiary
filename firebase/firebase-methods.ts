@@ -169,7 +169,7 @@ function organizeEntries(entries: JournalEntry[]): JournalDiccionary {
 }
 
 async function getDefaultFeelings(): Promise<Feeling[]> {
-  console.log('getting default feelings');
+  console.log('calling server for the default feelings');
   const col = collection(db, DEFAULT_FEELINGS_PATH);
   const feelingsAsObject = await (await getDocs(col)).docs.at(0).data();
   const feelings = Object.values(feelingsAsObject) as Feeling[];

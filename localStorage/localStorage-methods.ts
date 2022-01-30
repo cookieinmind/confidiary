@@ -1,41 +1,123 @@
 import { DateTime } from 'luxon';
 import { Feeling, JournalEntry } from '../components/utils/Models';
 import { JournalDiccionary } from '../context/JournalContextProvider';
+class Manager {
+  public static entriesChanged: () => void;
+  public static feelingsChanged: () => void;
 
-//*Private
-type UnsubFromEvents = () => void;
+  public static cleanSubscriptions() {
+    console.log('todo: cleaning ');
+    // if (this.entriesChanged) this.entriesChanged = null;
+    // if (this.feelingsChanged) this.feelingsChanged = null;
+  }
+}
+
 const KEY_FEELINGS = 'SINNER_JOURNAL_feelings';
 const KEY_ENTRIES = 'SINNER_JOURNAL_entries';
 
-let entriesChanged: () => void = null;
-let feelingsChanged: () => void = null; //! do not delete
+class EntryPoint {
+  //*Static
 
-function setObject(key: string, value: Object) {
-  localStorage.setItem(key, JSON.stringify(value));
-}
+  //*Public
+  get Feelings(): Feeling[] {
+    try {
+      const feelings = this.getObject(KEY_FEELINGS);
+      if (feelings) return feelings;
+      else throw new TypeError();
+    } catch (error) {
+      if (error instanceof TypeError) {
+        console.log('Setting the feeling keys');
+        this.setFeelingsKeys(); //Create the keys
+        return this.Feelings; //try again
+      } else {
+        console.log(error.type);
+        console.error(
+          'trying to subscribe to entries but theres an error:',
+          `"${error.message}"`
+        );
+      }
+    }
+  }
 
-function getObject(key: string) {
-  var value = localStorage.getItem(key);
-  if (value) {
-    const parsedData = JSON.parse(value);
-    const result = value && parsedData;
-    return result;
-  } else {
-    return undefined;
+  set Feelings(newFeelings: Feeling[]) {
+    this.setObject(KEY_FEELINGS, newFeelings);
+    if (Manager.feelingsChanged) Manager.feelingsChanged();
+  }
+
+  get Entries(): JournalEntry[] {
+    try {
+      const entries = this.getObject(KEY_ENTRIES);
+      if (entries) return entries;
+      else throw new TypeError();
+    } catch (error) {
+      if (error instanceof TypeError) {
+        this.setEntriesKeys(); //Create the keys
+        return this.Entries; //try again
+      } else {
+        console.log(error.type);
+        console.error(
+          'trying to subscribe to entries but theres an error:',
+          `"${error.message}"`
+        );
+      }
+    }
+  }
+
+  set Entries(AllEntries: JournalEntry[]) {
+    this.setObject(KEY_ENTRIES, AllEntries);
+    if (Manager.entriesChanged) Manager.entriesChanged();
+  }
+
+  async addEntry(newEntry: JournalEntry) {
+    try {
+      const oldEntries = this.getObject(KEY_ENTRIES) as JournalEntry[];
+      const newEntries = [...oldEntries, newEntry];
+      this.Entries = newEntries;
+      console.log('saved an entry in local storage');
+    } catch (error) {
+      console.error(error);
+      this.setEntriesKeys(); //prob the local storage was cleaned
+      createEntry(newEntry); //try again
+    }
+  }
+
+  //*Private
+  private setObject(key: string, value: Object) {
+    localStorage.setItem(key, JSON.stringify(value));
+  }
+
+  private getObject(key: string) {
+    var value = localStorage.getItem(key);
+    if (value) {
+      const parsedData = JSON.parse(value);
+      const result = value && parsedData;
+      return result;
+    } else {
+      return undefined;
+    }
+  }
+
+  private setEntriesKeys() {
+    console.log('Setting the default entry keys');
+    this.Entries = [];
+  }
+
+  private setFeelingsKeys() {
+    console.log('Setting the default feeling keys');
+    this.Feelings = [];
   }
 }
+
+//*Private
+type UnsubFromEvents = () => void;
 
 //*Public
 
 async function createEntry(newEntry: JournalEntry) {
   try {
-    const oldEntries = getObject(KEY_ENTRIES) as JournalEntry[];
-    const newEntries = [...oldEntries, newEntry];
-    setObject(KEY_ENTRIES, newEntries);
-    console.log('saved an entry in local storage');
-    entriesChanged();
+    await new EntryPoint().addEntry(newEntry);
   } catch (error) {
-    console.error(error);
+    throw error;
   }
 }
 
@@ -44,31 +126,17 @@ function subscribeToUserFeelings(
   setFeelings: (val: Feeling[]) => void
 ): UnsubFromEvents {
   function getFeelings() {
+    const storage = new EntryPoint();
     setIsLoading(true);
-    const feelingsObject = getObject(KEY_FEELINGS);
+    const feelingsObject = storage.Feelings;
     setFeelings(feelingsObject);
     setIsLoading(false);
     console.log('updated the feelings');
   }
 
-  feelingsChanged = getFeelings;
-  try {
-    getFeelings();
-  } catch (error) {
-    if (error instanceof TypeError) {
-      console.log('Setting the default feeling keys');
-      setObject(KEY_FEELINGS, []);
-      feelingsChanged();
-    } else {
-      console.log(error.type);
-      console.error(
-        'trying to subscribe to entries but theres an error:',
-        `"${error.message}"`
-      );
-    }
-  }
-
-  return () => (feelingsChanged = null);
+  Manager.feelingsChanged = getFeelings;
+  getFeelings();
+  return Manager.cleanSubscriptions;
 }
 
 function subscribeToUserEntries(
@@ -77,37 +145,18 @@ function subscribeToUserEntries(
   setEntriesByDate: (val: JournalDiccionary) => void
 ): UnsubFromEvents {
   const getEntries = () => {
+    const storage = new EntryPoint();
     console.log('called to update the entries');
     setIsLoading(true);
-    const entries: JournalEntry[] = [];
-    const entriesFromStorage = getObject(KEY_ENTRIES) as JournalEntry[];
-    entriesFromStorage.forEach((entry) => {
-      entries.push(entry);
-    });
+    const entries = storage.Entries;
     setEntries(entries);
     setEntriesByDate(organizeEntries(entries));
-    console.log('updated the entries');
     setIsLoading(false);
   };
 
-  entriesChanged = getEntries;
-  try {
-    getEntries();
-  } catch (error) {
-    if (error instanceof TypeError) {
-      console.log('Setting the default entries keys');
-      setObject(KEY_ENTRIES, []);
-      entriesChanged();
-    } else {
-      console.log(error.type);
-      console.error(
-        'trying to subscribe to entries but theres an error:',
-        `"${error.message}"`
-      );
-    }
-  }
-
-  return () => (entriesChanged = null);
+  Manager.entriesChanged = getEntries;
+  getEntries();
+  return Manager.cleanSubscriptions;
 }
 
 function organizeEntries(entries: JournalEntry[]): JournalDiccionary {
@@ -150,13 +199,16 @@ function organizeEntries(entries: JournalEntry[]): JournalDiccionary {
 async function setFeelingsDirectly(
   getFeelingsFromServer: () => Promise<Feeling[]>
 ): Promise<boolean> {
-  if (getObject(KEY_FEELINGS)) {
+  const storage = new EntryPoint();
+  const theresFeelings = storage.Feelings.length > 0;
+
+  if (theresFeelings) {
     console.log('theres already feelings in local storage');
     return true;
   } else {
     try {
       const feelings = await getFeelingsFromServer();
-      setObject(KEY_FEELINGS, feelings);
+      storage.Feelings = feelings;
       return true;
     } catch (error) {
       console.error(error);

@@ -53,15 +53,6 @@ export default function JournalContextProvider({ children }) {
   //*Set the functionality of the app
   function changeStorageType(newType: StorageType) {
     setStorageType(newType);
-
-    if (newType === StorageType.Local && !feelings) {
-      console.log(
-        'feelings not found. Getting default feelings from the server'
-      );
-      saveFeelingsInLocalStorage(getDefaultFeelings).catch((error) => {
-        console.error('Error trying to obtanied the default feelings', error);
-      });
-    }
   }
   //*Methods
   function findFeeling(feelingName: string): Feeling {
@@ -93,7 +84,7 @@ export default function JournalContextProvider({ children }) {
         const unsub = subscribeToUserFeelings_ls(
           setIsLoading,
           (feelings: Feeling[]) => {
-            console.log('adding this feelings:', feelings.length);
+            console.log('adding feelings');
             setFeelings(feelings);
           }
         );
@@ -112,13 +103,16 @@ export default function JournalContextProvider({ children }) {
           setIsLoading
         );
         break;
-      default:
+      case StorageType.Local:
         const unsub = subscribeToUserEntries_ls(
           setIsLoading,
           setEntries,
           setEntriesByDate
         );
         setUnsubFromEntries(unsub);
+        break;
+      default:
+        console.error('theres no storage type selected');
         break;
     }
   }
@@ -151,6 +145,17 @@ export default function JournalContextProvider({ children }) {
         console.log('subsribing to local storage');
         subscribeToUserEntries();
         subscribeToUserFeelings();
+        if (!feelings || feelings.length < 1) {
+          console.log(
+            'feelings not found. Getting default feelings from the server'
+          );
+          saveFeelingsInLocalStorage(getDefaultFeelings).catch((error) => {
+            console.error(
+              'Error trying to obtanied the default feelings',
+              error
+            );
+          });
+        }
 
         return () => {
           unsubscribeToAll();
