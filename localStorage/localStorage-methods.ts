@@ -4,8 +4,8 @@ import { JournalDiccionary } from '../context/JournalContextProvider';
 
 //*Private
 type UnsubFromEvents = () => void;
-const KEY_FEELINGS = 'feelings';
-const KEY_ENTRIES = 'entries';
+const KEY_FEELINGS = 'SINNER_JOURNAL_feelings';
+const KEY_ENTRIES = 'SINNER_JOURNAL_entries';
 
 let entriesChanged: () => void = null;
 let feelingsChanged: () => void = null; //! do not delete
