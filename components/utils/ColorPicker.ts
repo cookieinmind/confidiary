@@ -35,6 +35,7 @@ enum bgValues {
 }
 
 export function textColorPicker(feeling: Feeling): textValues {
+  if (!feeling) return null;
   const biggestSin = Object.keys(feeling.values)
     .sort((sinA, sinB) => feeling.values[sinA] - feeling.values[sinB])
     .at(-1);
@@ -75,6 +76,7 @@ export function textColorPicker(feeling: Feeling): textValues {
 }
 
 export function bgColorPicker(feeling: Feeling): bgValues {
+  if (!feeling) return null;
   const biggestSin = Object.keys(feeling.values)
     .sort((sinA, sinB) => feeling.values[sinA] - feeling.values[sinB])
     .at(-1);

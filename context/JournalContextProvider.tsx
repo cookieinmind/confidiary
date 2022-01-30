@@ -97,7 +97,15 @@ export default function JournalContextProvider({ children }) {
           setFeelings(feelingsInArray);
           setIsLoading(false);
         } catch (error) {
-          console.error(error);
+          throw error;
+        }
+      },
+      (error) => {
+        if (error.code === 'permission-denied') {
+          console.log('out f');
+        } else {
+          //The user doesn't have feelings yet
+          //we must create them.
           const defaultFeelingsCol = collection(db, DEFAULT_FEELINGS_PATH);
           getDoc(doc(defaultFeelingsCol, 'default')).then((docRef) => {
             const feelingsInObject = docRef.data();
@@ -111,23 +119,6 @@ export default function JournalContextProvider({ children }) {
             });
           });
         }
-      },
-      (error) => {
-        console.error(error);
-        //The user doesn't have feelings yet
-        //we must create them.
-        const defaultFeelingsCol = collection(db, DEFAULT_FEELINGS_PATH);
-        getDoc(doc(defaultFeelingsCol, 'default')).then((docRef) => {
-          const feelingsInObject = docRef.data();
-          const feelingsInArray = Object.values(feelingsInObject);
-
-          //create a doc for the user
-          setFeelings(feelingsInArray);
-          setDoc(userFeelingsDoc, feelingsInObject).then(() => {
-            console.log('added defaults to the user');
-            setIsLoading(false);
-          });
-        });
       }
     );
   };
@@ -148,24 +139,32 @@ export default function JournalContextProvider({ children }) {
     onSnapshot(
       entriesQuery,
       (snapshot) => {
-        const entries: JournalEntry[] = [];
-        snapshot.forEach((s) => {
-          const docData = s.data();
-          const journalEntry: JournalEntry = {
-            feelingName: docData.feelingName,
-            uid: docData.uid,
-            why: docData.why,
-            date: docData.date,
-          };
-          entries.push(journalEntry);
-        });
-        setEntries(entries);
-        setEntriesByDate(organizeEntries(entries));
-        console.log('updated the entries');
+        try {
+          const entries: JournalEntry[] = [];
+          snapshot.forEach((s) => {
+            const docData = s.data();
+            const journalEntry: JournalEntry = {
+              feelingName: docData.feelingName,
+              uid: docData.uid,
+              why: docData.why,
+              date: docData.date,
+            };
+            entries.push(journalEntry);
+          });
+          setEntries(entries);
+          setEntriesByDate(organizeEntries(entries));
+          console.log('updated the entries');
+        } catch (error) {
+          console.log('catch you', error);
+        }
       },
       (error) => {
-        console.error(error);
         setEntries([]);
+        if (error.code === 'permission-denied') {
+          console.log('out f');
+        } else {
+          console.error(error.code, error);
+        }
       }
     );
 
@@ -189,7 +188,10 @@ export default function JournalContextProvider({ children }) {
     entries.forEach((entry) => {
       const entryDate = DateTime.fromISO(entry.date);
 
-      const diffInDays = Math.floor(Math.abs(entryDate.diffNow('days').days));
+      const diffInDays = DateTime.now()
+        .startOf('day')
+        .diff(entryDate.startOf('day'))
+        .as('days');
 
       const key =
         diffInDays > 0
