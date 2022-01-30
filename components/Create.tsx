@@ -67,8 +67,12 @@ export default function Create({ onClose }: { onClose: () => void }) {
           {/* What happened */}
           <TextArea setWhy={setWhy} />
           {/* Buttons */}
-          <div className="flex gap-16 justify-center">
-            <FormButton icon="close" onClick={onClose} color="text-error" />
+          <div className="flex gap-16 justify-center ">
+            <FormButton
+              icon="close"
+              onClick={onClose}
+              color="text-errorContainer"
+            />
             <FormButton icon="save" onClick={submit} active={canSubmit} />
           </div>
         </form>

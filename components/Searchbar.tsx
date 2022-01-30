@@ -92,13 +92,13 @@ function LocaleStorageButton() {
             <article
               id="findme"
               className="bg-surface              
-              drop-shadow-2 rounded-lg overflow-hidden w-full
+              drop-shadow-5 rounded-lg overflow-hidden w-full
               "
             >
-              <header className="p-4 flex flex-col items-center justify-between bg-black text-surface">
-                <span className="material-icons text-2xl opacity-50 mb-2">
+              <header className="p-4 center flex-col bg-black text-surface">
+                {/* <span className="material-icons text-6xl opacity-50 mb-4">
                   engineering
-                </span>
+                </span> */}
                 <div className="flex items-center gap-4">
                   <span className="material-icons text-2xl opacity-90">
                     wifi_lock
@@ -113,12 +113,12 @@ function LocaleStorageButton() {
               </header>
               <div className="flex flex-col gap-4 p-4 items-center">
                 <p className="title-lg text-center">
-                  Transition between local storage and full account is in
+                  Export from local storage to full account is currently under
                   development. We sorry for the inconveniences.
                 </p>
 
                 <button
-                  className="w-full bg-black text-surface py-3 px-4 rounded-full drop-shadow-1 flex items-center justify-center gap-4
+                  className="w-full bg-surface text-onSurface py-3 px-4 rounded-full drop-shadow-1 flex items-center justify-center gap-4
                 group transition-all hover:drop-shadow-3
                 "
                   onClick={() => setShowErrorModal(false)}
