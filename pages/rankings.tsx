@@ -3,19 +3,23 @@ import Layout from '../components/Layouts/Layout';
 import { firestore, auth } from '../firebase/firebase-config';
 import { collection, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { USERS_TO_NOTIFY_PATH } from '../firebase/Paths';
-import { UserToNotify } from '../components/utils/Models';
+import { StorageType, UserToNotify } from '../components/utils/Models';
 import { FirebaseError } from 'firebase/app';
+import { useJournalContext } from '../context/JournalContextProvider';
 
 export default function Rankings() {
   const [notifyMe, setNotifyMe] = useState<boolean | null>(null);
   const inputRef = useRef<HTMLInputElement>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const { storageType } = useJournalContext();
 
   function change(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
   }
 
   useEffect(() => {
+    if (storageType !== StorageType.Firebase) return;
+
     setIsLoading(true);
     async function setValue() {
       try {
@@ -24,7 +28,7 @@ export default function Rankings() {
         const response = await getDoc(d);
         const { rankings } = response.data() as UserToNotify;
         setNotifyMe(rankings);
-        inputRef.current.checked = rankings;
+        if (inputRef && inputRef.current) inputRef.current.checked = rankings;
       } catch (error) {
         const col = collection(firestore, USERS_TO_NOTIFY_PATH);
         const d = doc(col, auth.currentUser.uid);
