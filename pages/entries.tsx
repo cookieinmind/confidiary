@@ -30,7 +30,7 @@ export default function Entries() {
             );
           })}
 
-        {Object.keys(entriesByDate).length < 1 && (
+        {entriesByDate && Object.keys(entriesByDate).length < 1 && (
           <article className="drop-shadow-2 rounded-lg  bg-surface overflow-hidden">
             <div className="flex flex-col gap-4 p-4">
               <h3 className="title-lg opacity-50 text-center">
