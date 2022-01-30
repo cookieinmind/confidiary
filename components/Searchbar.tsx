@@ -123,9 +123,6 @@ function LocaleStorageButton() {
                 "
                   onClick={() => setShowErrorModal(false)}
                 >
-                  {/* <span className="material-icons text-xl opacity-50  group-hover:opacity-100 group-hover:scale-125 transition-all ease-in-out">
-                    arrow_back
-                  </span> */}
                   <span className="label-xl">Go back</span>
                 </button>
               </div>
