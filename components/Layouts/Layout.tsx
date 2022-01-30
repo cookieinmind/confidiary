@@ -5,6 +5,8 @@ import { auth } from '../../firebase/firebase-config';
 import SearchBar from '../Searchbar';
 import { useModalContext } from '../../context/ModalContextProvider';
 import { onAuthStateChanged } from 'firebase/auth';
+import { useJournalContext } from '../../context/JournalContextProvider';
+import { StorageType } from '../utils/Models';
 
 export default function Layout({
   children,
@@ -12,33 +14,36 @@ export default function Layout({
   children: JSX.Element | JSX.Element[];
 }) {
   const { isModalOn } = useModalContext();
-
+  const { storageType } = useJournalContext();
   const router = useRouter();
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (user) => {
-      if (!user) signOut();
-    });
+    switch (storageType) {
+      case StorageType.Firebase:
+        const unsub = onAuthStateChanged(auth, (user) => {
+          if (!user) signOut();
+        });
 
-    return () => {
-      unsub();
-    };
+        return () => {
+          unsub();
+        };
+      case StorageType.Local:
+        console.log('the user is on local storage mode, keep it in');
+        break;
+      default:
+        console.log(
+          'Layout is signing the user out bc the storage type is ->',
+          storageType
+        );
+        signOut();
+        break;
+    }
   }, []);
 
   function signOut() {
+    console.log('going out?');
     auth.signOut();
     router.push('/');
-  }
-
-  function LogOutButton() {
-    return (
-      <button
-        className="bg-errorContainer text-onErrorContainer py-4 px-8 label-lg drop-shadow-1 rounded-md absolute bottom-16 left-0 right-0"
-        onClick={signOut}
-      >
-        Log out
-      </button>
-    );
   }
 
   return (

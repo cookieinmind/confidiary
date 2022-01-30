@@ -1,30 +1,46 @@
-import Head from 'next/head';
 import Image from 'next/image';
 import { auth, signInWithGoogle } from '../firebase/firebase-config';
 import { useRouter } from 'next/router';
-import { NextRouter } from 'next/router';
 import { useEffect } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
+import { useJournalContext } from '../context/JournalContextProvider';
+import { StorageType } from '../components/utils/Models';
 
 export default function Home() {
   const router = useRouter();
+  const { changeStorageType, storageType } = useJournalContext();
 
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        afterSignIn();
-      }
-    });
+    if (storageType === StorageType.Firebase) {
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          inWithGoogle();
+        }
+      });
+    }
   }, []);
 
-  function afterSignIn() {
+  function goHome() {
     router.push('/home');
   }
 
-  return <SignInPage afterSignIn={afterSignIn} />;
-}
+  async function manageSignInWihtGoogle() {
+    await signInWithGoogle();
+    inWithGoogle();
+  }
 
-function SignInPage({ afterSignIn }: { afterSignIn: () => void }) {
+  function inWithGoogle() {
+    if (auth.currentUser) {
+      changeStorageType(StorageType.Firebase);
+      goHome();
+    }
+  }
+
+  async function inWithLocalStorage() {
+    changeStorageType(StorageType.Local);
+    goHome();
+  }
+
   return (
     <div className="flex items-center justify-center h-screen w-screen">
       <main className="flex flex-col gap-8">
@@ -36,20 +52,13 @@ function SignInPage({ afterSignIn }: { afterSignIn: () => void }) {
           </h1>
           <p className="body-lg opacity-50">your personal journal</p>
         </div>
-        <button
-          onClick={async () => {
-            await signInWithGoogle();
-            if (auth.currentUser) {
-              afterSignIn();
-            }
-          }}
-          className="bg-blue-500 text-white rounded-md py-4 pr-8 pl-4 text-xl w-fit border-onSurface border-2 flex items-center  gap-4"
-        >
-          <figure className="mt-1">
-            <Image src="/google-logo.svg" height={16} width={16} />
-          </figure>
-          <span className="label-lg">Sign in with Google</span>
-        </button>
+        <div className="flex flex-col gap-2">
+          <SignInWithGoogleButton openPopUp={manageSignInWihtGoogle} />
+          <span className="label-lg py-2">{`--- or ---`}</span>
+          <SignInWithLocalStorageButton
+            onLocalStorageSelected={inWithLocalStorage}
+          />
+        </div>
       </main>
 
       <footer className="absolute bottom-10">
@@ -65,5 +74,39 @@ function SignInPage({ afterSignIn }: { afterSignIn: () => void }) {
         </a>
       </footer>
     </div>
+  );
+}
+
+function SignInWithGoogleButton({
+  openPopUp,
+}: {
+  openPopUp: () => Promise<void>;
+}) {
+  return (
+    <button
+      onClick={openPopUp}
+      className="bg-blue-500 text-white rounded-md py-4  pr-8 pl-4 text-xl w-fit border-onSurface border-2 flex items-center  gap-4"
+    >
+      <figure className="aspect-square h-[16px] center">
+        <Image src="/google-logo.svg" height={16} width={16} />
+      </figure>
+      <span className="label-lg">Sign in with Google</span>
+    </button>
+  );
+}
+
+function SignInWithLocalStorageButton({
+  onLocalStorageSelected,
+}: {
+  onLocalStorageSelected: () => Promise<void>;
+}) {
+  return (
+    <button
+      onClick={onLocalStorageSelected}
+      className="bg-blue-500 text-white rounded-md py-4  pr-8 pl-4  text-xl w-fit border-onSurface border-2 flex items-center  gap-4"
+    >
+      <span className="material-icons text-[16px]">lock</span>
+      <span className="label-lg">Keep journal on your phone</span>
+    </button>
   );
 }

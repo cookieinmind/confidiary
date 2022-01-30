@@ -1,8 +1,14 @@
+export enum StorageType {
+  Undefined = 'not set yet',
+  Firebase = 'the user picked firebase',
+  Local = 'the user picked local storage',
+}
+
 export type JournalEntry = {
   date: string;
   feelingName: string;
   why?: string;
-  uid: string;
+  uid?: string;
 };
 
 // export type Thought = {

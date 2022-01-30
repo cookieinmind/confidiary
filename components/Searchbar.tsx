@@ -1,18 +1,18 @@
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { auth } from '../firebase/firebase-config';
-import { useRouter } from 'next/router';
+// import { useRouter } from 'next/router';
 import Modal from './utils/Modal';
 
 export default function SearchBar() {
-  const router = useRouter();
+  // const router = useRouter();
 
-  useEffect(() => {
-    function redirectToSignIn() {
-      if (!auth.currentUser) router.push('/');
-    }
-    redirectToSignIn();
-  }, [auth, router]);
+  // useEffect(() => {
+  //   function redirectToSignIn() {
+  //     if (!auth.currentUser) router.push('/');
+  //   }
+  //   redirectToSignIn();
+  // }, [auth, router]);
 
   return (
     <div className="w-full flex justify-around items-center py-2 pl-4 pr-2  rounded-full drop-shadow-3 bg-surface">

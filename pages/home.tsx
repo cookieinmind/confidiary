@@ -6,7 +6,6 @@ import {
   JournalDiccionary,
   useJournalContext,
 } from '../context/JournalContextProvider';
-import EntryCard from '../components/cards/EntryCard';
 import { JournalEntry } from '../components/utils/Models';
 
 export default function Home() {

@@ -14,10 +14,6 @@ export default function TodayCard({
   //todays entries
   //all the feelings and how many entries per feeling
 
-  useEffect(() => {
-    console.log(numOfEntries, entriesPerFeeling);
-  }, [numOfEntries, entriesPerFeeling]);
-
   return (
     <article className="drop-shadow-2 rounded-lg  bg-surface overflow-hidden">
       <CardHeader number={numOfEntries} />

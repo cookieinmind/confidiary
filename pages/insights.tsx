@@ -1,30 +1,24 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Layout from '../components/Layouts/Layout';
 import { firestore, auth } from '../firebase/firebase-config';
-import {
-  addDoc,
-  collection,
-  doc,
-  getDoc,
-  query,
-  setDoc,
-  updateDoc,
-  where,
-} from 'firebase/firestore';
-import { USERS_FEELINGS_PATH, USERS_TO_NOTIFY_PATH } from '../firebase/Paths';
-import { UserToNotify } from '../components/utils/Models';
+import { collection, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import { USERS_TO_NOTIFY_PATH } from '../firebase/Paths';
+import { StorageType, UserToNotify } from '../components/utils/Models';
 import { FirebaseError } from 'firebase/app';
+import { useJournalContext } from '../context/JournalContextProvider';
 
 export default function Insights() {
   const [notifyMe, setNotifyMe] = useState<boolean | null>(null);
   const inputRef = useRef<HTMLInputElement>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const { storageType } = useJournalContext();
 
   function change(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
   }
 
   useEffect(() => {
+    if (storageType !== StorageType.Firebase) return;
     setIsLoading(true);
     async function setValue() {
       try {

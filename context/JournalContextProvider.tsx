@@ -1,39 +1,30 @@
 import React from 'react';
 import { createContext, useContext, useEffect, useState } from 'react';
 
-import { auth, firestore as db } from '../firebase/firebase-config';
+import { auth } from '../firebase/firebase-config';
 import { onAuthStateChanged, User } from 'firebase/auth';
-import { Feeling, JournalEntry } from '../components/utils/Models';
+import { Feeling, JournalEntry, StorageType } from '../components/utils/Models';
 import {
-  addDoc,
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  query,
-  setDoc,
-  where,
-  onSnapshot,
-  FirestoreError,
-  DocumentSnapshot,
-  DocumentData,
-  Unsubscribe,
-  QuerySnapshot,
-  orderBy,
-} from 'firebase/firestore';
+  createEntry as createEntry_fb,
+  subscribeToUserEntries as subscribeToUserEntries_fb,
+  subscribeToUserFeelings as subscribeToUserFeelings_fb,
+  getDefaultFeelings,
+} from '../firebase/firebase-methods';
 
 import {
-  USERS_FEELINGS_PATH,
-  DEFAULT_FEELINGS_PATH,
-  JOURNALS_PATH,
-} from '../firebase/Paths';
-import { DateTime } from 'luxon';
+  createEntry as createEntry_ls,
+  subscribeToUserEntries as subscribeToUserEntries_ls,
+  subscribeToUserFeelings as subscribeToUserFeelings_ls,
+  setFeelingsDirectly as saveFeelingsInLocalStorage,
+} from '../localStorage/localStorage-methods';
 
 export type JournalDiccionary = {
   [key: string]: JournalEntry[];
 };
 
 type ModalContextState = {
+  storageType: StorageType;
+  changeStorageType: (x: StorageType) => void;
   entries: JournalEntry[];
   entriesByDate: JournalDiccionary;
   feelings: Feeling[];
@@ -42,14 +33,7 @@ type ModalContextState = {
   isLoading: boolean;
 };
 
-const journalContext = createContext<ModalContextState>({
-  entries: [],
-  feelings: [],
-  entriesByDate: null,
-  createEntry: async (newEntry: JournalEntry) => {},
-  findFeeling: (feelingName: string) => null,
-  isLoading: true,
-});
+const journalContext = createContext<ModalContextState>(null);
 
 export const useJournalContext = () => {
   const response = useContext(journalContext);
@@ -58,11 +42,27 @@ export const useJournalContext = () => {
 
 export default function JournalContextProvider({ children }) {
   //*State
+  const [storageType, setStorageType] = useState<StorageType>();
   const [feelings, setFeelings] = useState<Feeling[]>();
   const [entries, setEntries] = useState<JournalEntry[]>();
   const [entriesByDate, setEntriesByDate] = useState<JournalDiccionary>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [unsubFromFeelings, setUnsubFromFeelings] = useState<() => void>();
+  const [unsubFromEntries, setUnsubFromEntries] = useState<() => void>();
 
+  //*Set the functionality of the app
+  function changeStorageType(newType: StorageType) {
+    setStorageType(newType);
+
+    if (newType === StorageType.Local && !feelings) {
+      console.log(
+        'feelings not found. Getting default feelings from the server'
+      );
+      saveFeelingsInLocalStorage(getDefaultFeelings).catch((error) => {
+        console.error('Error trying to obtanied the default feelings', error);
+      });
+    }
+  }
   //*Methods
   function findFeeling(feelingName: string): Feeling {
     if (!feelings) return;
@@ -72,163 +72,98 @@ export default function JournalContextProvider({ children }) {
   }
 
   async function createEntry(newEntry: JournalEntry) {
-    try {
-      const col = collection(db, JOURNALS_PATH);
-      const response = await addDoc(col, newEntry);
-      console.log(response);
-    } catch (error) {
-      console.error(error);
+    switch (storageType) {
+      case StorageType.Firebase:
+        await createEntry_fb(newEntry);
+        break;
+      case StorageType.Local:
+        await createEntry_ls(newEntry);
+        break;
+      default:
+        throw new Error('No storage type selected');
     }
   }
 
-  const subscribeToUserFeelings = (user: User): Unsubscribe => {
-    if (!user) return;
-
-    const userFeelingsDoc = doc(collection(db, USERS_FEELINGS_PATH), user.uid);
-    return onSnapshot(
-      userFeelingsDoc,
-      (snapshot) => {
-        try {
-          setIsLoading(true);
-          const feelingsInObject = snapshot.data();
-          if (!feelingsInObject)
-            throw new Error("The user doesn't have an entry");
-          const feelingsInArray = Object.values(feelingsInObject);
-          setFeelings(feelingsInArray);
-          setIsLoading(false);
-        } catch (error) {
-          throw error;
-        }
-      },
-      (error) => {
-        if (error.code === 'permission-denied') {
-          console.log('out f');
-        } else {
-          //The user doesn't have feelings yet
-          //we must create them.
-          const defaultFeelingsCol = collection(db, DEFAULT_FEELINGS_PATH);
-          getDoc(doc(defaultFeelingsCol, 'default')).then((docRef) => {
-            const feelingsInObject = docRef.data();
-            const feelingsInArray = Object.values(feelingsInObject);
-
-            //create a doc for the user
-            setFeelings(feelingsInArray);
-            setDoc(userFeelingsDoc, feelingsInObject).then(() => {
-              console.log('added defaults to the user');
-              setIsLoading(false);
-            });
-          });
-        }
-      }
-    );
+  const subscribeToUserFeelings = (user?: User) => {
+    switch (storageType) {
+      case StorageType.Firebase:
+        subscribeToUserFeelings_fb(user, setIsLoading, setFeelings);
+        break;
+      default:
+        const unsub = subscribeToUserFeelings_ls(
+          setIsLoading,
+          (feelings: Feeling[]) => {
+            console.log('adding this feelings:', feelings.length);
+            setFeelings(feelings);
+          }
+        );
+        setUnsubFromFeelings(unsub);
+        break;
+    }
   };
 
-  function subscribeToUserEntries(user: User): Unsubscribe {
-    if (!user) return;
-    console.log('sub to entries on');
-
-    const journalCollection = collection(db, JOURNALS_PATH);
-    const entriesQuery = query(
-      journalCollection,
-      where('uid', '==', user.uid),
-      orderBy('date', 'desc')
-    );
-
-    console.log();
-
-    onSnapshot(
-      entriesQuery,
-      (snapshot) => {
-        try {
-          const entries: JournalEntry[] = [];
-          snapshot.forEach((s) => {
-            const docData = s.data();
-            const journalEntry: JournalEntry = {
-              feelingName: docData.feelingName,
-              uid: docData.uid,
-              why: docData.why,
-              date: docData.date,
-            };
-            entries.push(journalEntry);
-          });
-          setEntries(entries);
-          setEntriesByDate(organizeEntries(entries));
-          console.log('updated the entries');
-        } catch (error) {
-          console.log('catch you', error);
-        }
-      },
-      (error) => {
-        setEntries([]);
-        if (error.code === 'permission-denied') {
-          console.log('out f');
-        } else {
-          console.error(error.code, error);
-        }
-      }
-    );
-
-    // setUnsubFromEntries(unsub);
+  function subscribeToUserEntries(user?: User) {
+    switch (storageType) {
+      case StorageType.Firebase:
+        subscribeToUserEntries_fb(
+          user,
+          setEntries,
+          setEntriesByDate,
+          setIsLoading
+        );
+        break;
+      default:
+        const unsub = subscribeToUserEntries_ls(
+          setIsLoading,
+          setEntries,
+          setEntriesByDate
+        );
+        setUnsubFromEntries(unsub);
+        break;
+    }
   }
 
   function unsubscribeToAll() {
     console.log('unsubing from all');
     setEntries(null);
     setFeelings(null);
-    // unsubFromEntries();
-    // unsubFromFeelings();
-  }
-
-  function organizeEntries(entries: JournalEntry[]): JournalDiccionary {
-    if (!entries) return null;
-    console.log('organizing entries');
-    const result: JournalDiccionary = {};
-
-    // const today = new Date().getTime();
-    entries.forEach((entry) => {
-      const entryDate = DateTime.fromISO(entry.date);
-
-      const diffInDays = DateTime.now()
-        .startOf('day')
-        .diff(entryDate.startOf('day'))
-        .as('days');
-
-      const key =
-        diffInDays > 0
-          ? diffInDays === 1
-            ? `Yesterday`
-            : `${diffInDays} days ago`
-          : 'Today';
-
-      console.log(diffInDays, key);
-
-      if (result.hasOwnProperty(key)) {
-        result[key].push(entry);
-      } else {
-        result[key] = [entry];
-      }
-    });
-
-    return result;
+    if (unsubFromEntries) unsubFromEntries();
+    if (unsubFromFeelings) unsubFromFeelings();
   }
 
   //*Effects
   useEffect(() => {
-    console.log('running effect');
-    const dropAuthObserver = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        subscribeToUserFeelings(user);
-        subscribeToUserEntries(user);
-      } else unsubscribeToAll();
-    });
+    switch (storageType) {
+      case StorageType.Firebase:
+        console.log('subsribing to firebase');
+        const dropAuthObserver = onAuthStateChanged(auth, (user) => {
+          if (user) {
+            subscribeToUserFeelings(user);
+            subscribeToUserEntries(user);
+          } else unsubscribeToAll();
+        });
 
-    return () => {
-      dropAuthObserver();
-      unsubscribeToAll();
-    };
-  }, []);
+        return () => {
+          dropAuthObserver();
+          unsubscribeToAll();
+        };
+      case StorageType.Local:
+        console.log('subsribing to local storage');
+        subscribeToUserEntries();
+        subscribeToUserFeelings();
+
+        return () => {
+          unsubscribeToAll();
+        };
+      default:
+        console.log(storageType);
+        break;
+    }
+  }, [storageType]);
 
   const state = {
+    storageType,
+    changeStorageType,
     entries,
     feelings,
     createEntry,

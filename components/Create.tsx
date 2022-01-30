@@ -35,7 +35,7 @@ export default function Create({ onClose }: { onClose: () => void }) {
     const data: JournalEntry = {
       date: DateTime.now().toISO(),
       feelingName: feeling.name,
-      uid: auth.currentUser.uid,
+      uid: auth?.currentUser?.uid,
       why: why,
     };
     createEntry(data);
