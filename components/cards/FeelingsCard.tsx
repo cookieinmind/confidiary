@@ -12,7 +12,7 @@ export default function FeelingCard({ feeling }: { feeling: Feeling }) {
   }
 
   const animationStyles = `transition-all duration-500 overflow-hidden ${
-    show ? 'drop-shadow-2 h-fit' : 'drop-shadow-1 h-[73.5px]'
+    show ? 'drop-shadow-2' : 'drop-shadow-1'
   }`;
 
   return (
@@ -45,11 +45,11 @@ function CardHeader({
   const feeling = findFeeling(feelingName);
   const bgColor = bgColorPicker(feeling);
 
-  const flex_behaviour = `basis-auto shrink-0 grow-0}`;
+  const flex_behaviour = `basis-auto shrink-0 grow-0`;
 
   return (
     <header
-      className={`cursor-pointer relative z-20 p-4 flex items-end justify-between ${bgColor}  text-surface ${flex_behaviour}`}
+      className={`cursor-pointer relative z-20 p-4 pb-5 flex items-end justify-between ${bgColor}  text-surface ${flex_behaviour}`}
       onClick={onClick}
     >
       <div className="grow">

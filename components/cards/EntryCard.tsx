@@ -13,7 +13,7 @@ export default function EntryCard({ entry }: { entry: JournalEntry }) {
   }
 
   const animationStyles = `transition-all duration-500 overflow-hidden ${
-    show ? 'drop-shadow-2 h-fit' : 'drop-shadow-1 h-[73.5px]'
+    show ? 'drop-shadow-2' : 'drop-shadow-1'
   }`;
 
   const entryDate = DateTime.fromISO(entry.date);
@@ -33,7 +33,7 @@ export default function EntryCard({ entry }: { entry: JournalEntry }) {
         expanded={show}
         showArrow={entry.why !== null}
       />
-      {entry.why && <CardContent content={entry.why} show={show} />}
+      {show && entry.why && <CardContent content={entry.why} show={show} />}
     </article>
   );
 }
