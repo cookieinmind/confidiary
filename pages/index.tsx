@@ -67,11 +67,10 @@ export default function Home() {
     <div className="flex items-center justify-center h-screen w-screen">
       <main className="flex flex-col gap-8">
         <div>
-          <h1 className="headline-lg">
-            sinner
-            <br />
-            journal
-          </h1>
+          <div>
+            <Image src="/Logo-Dark.svg" height={40} width={40} />
+            <h1 className="headline-lg">confidiary</h1>
+          </div>
           <p className="body-lg opacity-50">your personal journal</p>
         </div>
         <div className="flex flex-col gap-2">
