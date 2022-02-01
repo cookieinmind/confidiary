@@ -14,7 +14,7 @@ export default function Layout({
   children: JSX.Element | JSX.Element[];
 }) {
   const { isModalOn } = useModalContext();
-  const { storageType } = useJournalContext();
+  const { storageType, changeStorageType } = useJournalContext();
   const router = useRouter();
 
   useEffect(() => {
@@ -25,6 +25,7 @@ export default function Layout({
         });
 
         return () => {
+          console.log('removing auth listener');
           unsub();
         };
       case StorageType.Local:
@@ -32,7 +33,7 @@ export default function Layout({
         break;
       default:
         console.log(
-          'Layout is signing the user out bc the storage type is ->',
+          'Layout is signing the user out bc the storage type is undefined , look: ',
           storageType
         );
         signOut();

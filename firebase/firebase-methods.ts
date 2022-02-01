@@ -26,7 +26,6 @@ async function createEntry(newEntry: JournalEntry) {
   try {
     const col = collection(db, JOURNALS_PATH);
     const response = await addDoc(col, newEntry);
-    console.log(response);
   } catch (error) {
     console.error(error);
   }
@@ -57,7 +56,6 @@ const subscribeToUserFeelings = (
     },
     (error) => {
       if (error.code === 'permission-denied') {
-        console.log('out f');
       } else {
         //The user doesn't have feelings yet
         //we must create them.
@@ -94,8 +92,6 @@ function subscribeToUserEntries(
     orderBy('date', 'desc')
   );
 
-  console.log();
-
   onSnapshot(
     entriesQuery,
     (snapshot) => {
@@ -117,14 +113,13 @@ function subscribeToUserEntries(
         console.log('updated the entries');
         setIsLoading(false);
       } catch (error) {
-        console.log('catch you', error);
+        console.error(error);
         setIsLoading(false);
       }
     },
     (error) => {
       setEntries([]);
       if (error.code === 'permission-denied') {
-        console.log('out f');
       } else {
         console.error(error.code, error);
       }
@@ -155,8 +150,6 @@ function organizeEntries(entries: JournalEntry[]): JournalDiccionary {
           ? `Yesterday`
           : `${diffInDays} days ago`
         : 'Today';
-
-    console.log(diffInDays, key);
 
     if (result.hasOwnProperty(key)) {
       result[key].push(entry);

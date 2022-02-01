@@ -2,7 +2,7 @@ import Image from 'next/image';
 import { auth, signInWithGoogle } from '../firebase/firebase-config';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
-import { onAuthStateChanged } from 'firebase/auth';
+import { browserLocalPersistence, onAuthStateChanged } from 'firebase/auth';
 import { useJournalContext } from '../context/JournalContextProvider';
 import { StorageType } from '../components/utils/Models';
 
@@ -11,13 +11,34 @@ export default function Home() {
   const { changeStorageType, storageType } = useJournalContext();
 
   useEffect(() => {
-    if (storageType === StorageType.Firebase) {
-      onAuthStateChanged(auth, (user) => {
-        if (user) {
-          inWithGoogle();
-        }
-      });
+    if (storageType === StorageType.Firebase && auth.currentUser) {
+      console.log('w google');
+      inWithGoogle();
+    } else if (storageType === StorageType.Local) {
+      console.log('w ls');
+      inWithLocalStorage();
+    } else {
+      console.log('no storage type set');
     }
+
+    auth.onAuthStateChanged((user) => {
+      console.log('-------->', user);
+    });
+    //   if (auth.currentUser) {
+    //     //The user prob wants to use the firebase version
+    //     changeStorageType(StorageType.Firebase);
+    //     inWithGoogle();
+    //   }
+
+    // console.log('is the user defined:', auth);
+    // if (storageType === StorageType.Firebase) {
+    //   auth.setPersistence(browserLocalPersistence);
+    //   onAuthStateChanged(auth, (user) => {
+    //     if (user) {
+    //       inWithGoogle();
+    //     }
+    //   });
+    // }
   }, []);
 
   function goHome() {
@@ -31,6 +52,7 @@ export default function Home() {
 
   function inWithGoogle() {
     if (auth.currentUser) {
+      auth.setPersistence(browserLocalPersistence);
       changeStorageType(StorageType.Firebase);
       goHome();
     }
