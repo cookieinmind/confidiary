@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import NavItem from './NavItem';
 import Create from '../Create';
+import { RouterPaths } from '../../context/RouterPaths';
 
 export default function Navbar() {
   const [showCreate, setShowCreate] = useState<boolean>(false);
@@ -11,11 +12,11 @@ export default function Navbar() {
 
   return (
     <div className="w-full flex items-center justify-between py-2 px-4 bg-black text-surface">
-      <NavItem path="/home" label="days" icon="calendar_today" />
-      <NavItem path="/insights" label="insights" icon="insights" />
+      <NavItem path={RouterPaths.entries} label="entries" icon="bubble_chart" />
+      <NavItem path={RouterPaths.insights} label="insights" icon="insights" />
       <CreateButton onClick={manageCreation} />
-      <NavItem path="/rankings" label="rankings" icon="star" />
-      <NavItem path="/entries" label="entries" icon="bubble_chart" />
+      <NavItem path={RouterPaths.feelings} label="rankings" icon="star" />
+      <NavItem path={RouterPaths.days} label="days" icon="calendar_today" />
 
       {showCreate && <Create onClose={() => setShowCreate(false)} />}
     </div>

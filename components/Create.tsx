@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 import Modal from './utils/Modal';
 import { bgColorPicker } from './utils/ColorPicker';
 import { DateTime } from 'luxon';
+import { RouterPaths } from '../context/RouterPaths';
 
 export default function Create({ onClose }: { onClose: () => void }) {
   //*Context
@@ -39,7 +40,7 @@ export default function Create({ onClose }: { onClose: () => void }) {
       why: why,
     };
     createEntry(data);
-    router.push('/entries');
+    router.push(RouterPaths.entries);
     onClose();
   }
 

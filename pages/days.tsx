@@ -8,7 +8,7 @@ import {
 } from '../context/JournalContextProvider';
 import { JournalEntry } from '../components/utils/Models';
 
-export default function Home() {
+export default function Days() {
   const { entriesByDate, isLoading: isFetchingData } = useJournalContext();
   const [todayEntries, setTodayEntries] = useState<JournalEntry[]>();
   const [notTodaysEntries, setNotTodaysEntries] = useState<JournalDiccionary>();
@@ -139,6 +139,6 @@ function ShowOtherDayCard({
   );
 }
 
-Home.getLayout = function getLayout(page) {
+Days.getLayout = function getLayout(page) {
   return <Layout>{page}</Layout>;
 };

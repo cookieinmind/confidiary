@@ -2,9 +2,10 @@ import Image from 'next/image';
 import { auth, signInWithGoogle } from '../firebase/firebase-config';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
-import { browserLocalPersistence, onAuthStateChanged } from 'firebase/auth';
+import { browserLocalPersistence } from 'firebase/auth';
 import { useJournalContext } from '../context/JournalContextProvider';
 import { StorageType } from '../components/utils/Models';
+import { RouterPaths } from '../context/RouterPaths';
 
 export default function Home() {
   const router = useRouter();
@@ -20,10 +21,6 @@ export default function Home() {
     } else {
       console.log('no storage type set');
     }
-
-    auth.onAuthStateChanged((user) => {
-      console.log('-------->', user);
-    });
     //   if (auth.currentUser) {
     //     //The user prob wants to use the firebase version
     //     changeStorageType(StorageType.Firebase);
@@ -42,7 +39,7 @@ export default function Home() {
   }, []);
 
   function goHome() {
-    router.push('/home');
+    router.push(RouterPaths.entries);
   }
 
   async function manageSignInWihtGoogle() {

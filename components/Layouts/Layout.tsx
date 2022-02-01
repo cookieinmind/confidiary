@@ -7,6 +7,7 @@ import { useModalContext } from '../../context/ModalContextProvider';
 import { onAuthStateChanged } from 'firebase/auth';
 import { useJournalContext } from '../../context/JournalContextProvider';
 import { StorageType } from '../utils/Models';
+import { RouterPaths } from '../../context/RouterPaths';
 
 export default function Layout({
   children,
@@ -44,7 +45,7 @@ export default function Layout({
   function signOut() {
     console.log('going out?');
     auth.signOut();
-    router.push('/');
+    router.push(RouterPaths.signIn);
   }
 
   return (
