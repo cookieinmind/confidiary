@@ -12,10 +12,15 @@ export default function Navbar() {
 
   return (
     <div className="w-full flex items-center justify-between py-2 px-4 bg-black text-surface">
-      <NavItem path={RouterPaths.entries} label="entries" icon="bubble_chart" />
-      <NavItem path={RouterPaths.insights} label="insights" icon="insights" />
+      <NavItem path={RouterPaths.entries} label="entries" icon="edit" />
+      <NavItem
+        path={RouterPaths.feelings}
+        label="feelings"
+        icon="bubble_chart"
+      />
       <CreateButton onClick={manageCreation} />
-      <NavItem path={RouterPaths.feelings} label="rankings" icon="star" />
+      <NavItem path={RouterPaths.insights} label="insights" icon="insights" />
+
       <NavItem path={RouterPaths.days} label="days" icon="calendar_today" />
 
       {showCreate && <Create onClose={() => setShowCreate(false)} />}
