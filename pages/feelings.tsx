@@ -2,9 +2,12 @@ import React, { useEffect, useRef, useState } from 'react';
 import Layout from '../components/Layouts/Layout';
 import { useJournalContext } from '../context/JournalContextProvider';
 import FeelingCard from '../components/cards/FeelingsCard';
+import EditFeeling from '../components/feelings/EditFeelings';
+import { Feeling } from '../components/utils/Models';
 
 export default function Feelings() {
   const { feelings } = useJournalContext();
+  const [feelingToEdit, setFeelingToEdit] = useState<Feeling>();
 
   return (
     <div className="p-2">
@@ -14,12 +17,24 @@ export default function Feelings() {
         <h6 className="label-lg">A - Z</h6>
       </div>
 
-      <div className="flex flex-col gap-2 pt-2">
+      <div className="flex flex-col gap-4 pt-2">
         {feelings &&
           feelings.map((f) => {
-            return <FeelingCard feeling={f} />;
+            return (
+              <FeelingCard
+                feeling={f}
+                editFeeling={() => setFeelingToEdit(f)}
+              />
+            );
           })}
       </div>
+
+      {feelingToEdit && (
+        <EditFeeling
+          onClose={() => setFeelingToEdit(null)}
+          feeling={feelingToEdit}
+        />
+      )}
     </div>
   );
 }

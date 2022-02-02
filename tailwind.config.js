@@ -24,6 +24,8 @@ module.exports = {
       outline: '#71787D',
 
       error: '#ffb4a9',
+      success: '#15803d',
+      onSuccess: '#f0fdf4',
       onError: '#680003',
       errorContainer: '#930006',
       onErrorContainer: '#ffdad4',

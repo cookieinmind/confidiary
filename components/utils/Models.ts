@@ -38,6 +38,31 @@ export type Feeling = {
   }[];
 };
 
+export type Feeling2 = {
+  name: string;
+  values: {
+    charity: {
+      percentage: number;
+      bgColor: 'bg-charity';
+      textColor: 'text-charity';
+      outlineColor: 'outline-charity';
+    };
+    chastity: number;
+    diligence: number;
+    envy: number;
+    gluttony: number;
+    greed: number;
+    humility: number;
+    kindness: number;
+    lust: number;
+    patience: number;
+    pride: number;
+    sloth: number;
+    temperance: number;
+    wrath: number;
+  }[];
+};
+
 export type UserToNotify = {
   edits?: boolean;
   insights?: boolean;

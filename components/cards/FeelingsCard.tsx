@@ -3,7 +3,13 @@ import { Feeling } from '../utils/Models';
 import { bgColorPicker, textColorPicker } from '../utils/ColorPicker';
 import { useJournalContext } from '../../context/JournalContextProvider';
 
-export default function FeelingCard({ feeling }: { feeling: Feeling }) {
+export default function FeelingCard({
+  feeling,
+  editFeeling,
+}: {
+  feeling: Feeling;
+  editFeeling: () => void;
+}) {
   const [show, setShow] = useState<boolean>(false);
 
   function manageExpand() {
@@ -27,7 +33,9 @@ export default function FeelingCard({ feeling }: { feeling: Feeling }) {
         onClick={manageExpand}
         expanded={show}
       />
-      {show && <CardContent feeling={feeling} show={show} />}
+      {show && (
+        <CardContent feeling={feeling} show={show} editFeeling={editFeeling} />
+      )}
     </article>
   );
 }
@@ -43,13 +51,13 @@ function CardHeader({
 }) {
   const { findFeeling } = useJournalContext();
   const feeling = findFeeling(feelingName);
-  const bgColor = bgColorPicker(feeling);
+  const textColor = textColorPicker(feeling);
 
-  const flex_behaviour = `basis-auto shrink-0 grow-0`;
+  const whenExpanded = expanded ? 'pb-2' : 'pb-5';
 
   return (
     <header
-      className={`cursor-pointer relative z-20 p-4 pb-5 flex items-end justify-between ${bgColor}  text-surface ${flex_behaviour}`}
+      className={`cursor-pointer relative pt-4 px-4 z-20 flex items-end justify-between ${textColor} bg-surface ${whenExpanded}`}
       onClick={onClick}
     >
       <div className="grow">
@@ -59,7 +67,7 @@ function CardHeader({
       </div>
       <button className="shrink-0 grid place-items-center">
         <span
-          className={`material-icons shrink-0 transition-all ${
+          className={`material-icons shrink-0 transition-all text-black ${
             expanded ? 'rotate-180' : 'rotate-0'
           }  `}
         >
@@ -70,28 +78,36 @@ function CardHeader({
   );
 }
 
-function CardContent({ feeling, show }: { feeling: Feeling; show: boolean }) {
-  const flex_behaviour = `transition-[opacity] duration-500 ease-in-out ${
-    show ? 'opactiy-100' : 'opactiy-0'
-  }`;
-
+function CardContent({
+  feeling,
+  show,
+  editFeeling,
+}: {
+  feeling: Feeling;
+  show: boolean;
+  editFeeling: () => void;
+}) {
   return (
-    <div
-      id="content1!!"
-      className={`bg-surface p-4 z-10 drop-shadow-2 relative      
-    ${flex_behaviour}
-    `}
-    >
-      {feeling &&
-        Object.keys(feeling.values).map((attribute) => {
-          return (
-            <FeelingEntry
-              key={attribute}
-              attribute={attribute}
-              number={feeling.values[attribute]}
-            />
-          );
-        })}
+    <div className=" drop-shadow-2 bg-surface z-10 relative">
+      <div className="p-4 flex flex-col gap-2">
+        {feeling &&
+          Object.keys(feeling.values).map((attribute) => {
+            return (
+              <FeelingEntry
+                key={attribute}
+                attribute={attribute}
+                number={feeling.values[attribute]}
+              />
+            );
+          })}
+      </div>
+      <button
+        className="p-4 bg-black text-surface w-full flex gap-4 justify-center items-center"
+        onClick={editFeeling}
+      >
+        <span className="material-icons text-xl">edit</span>
+        <span className="label-lg">Edit feeling</span>
+      </button>
     </div>
   );
 }
