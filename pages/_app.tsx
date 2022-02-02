@@ -1,5 +1,4 @@
 import '../styles/globals.css';
-import Head from 'next/head';
 import ModalContextProvider from '../context/ModalContextProvider';
 import JournalContextProvider from '../context/JournalContextProvider';
 
@@ -8,13 +7,6 @@ function MyApp({ Component, pageProps }) {
   if (Component.getLayout) {
     return (
       <>
-        <Head>
-          <title>Sinner Journal</title>
-          <link
-            rel="stylesheet"
-            href="https://fonts.googleapis.com/icon?family=Material+Icons"
-          />
-        </Head>
         <ModalContextProvider>
           <JournalContextProvider>
             {Component.getLayout(<Component {...pageProps} />)}
@@ -25,13 +17,6 @@ function MyApp({ Component, pageProps }) {
   } else {
     return (
       <>
-        <Head>
-          <title>Sinner Journal</title>
-          <link
-            rel="stylesheet"
-            href="https://fonts.googleapis.com/icon?family=Material+Icons"
-          />
-        </Head>
         <ModalContextProvider>
           <JournalContextProvider>
             <Component {...pageProps} />

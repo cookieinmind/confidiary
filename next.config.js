@@ -1,4 +1,11 @@
-module.exports = {
+const withPWA = require('next-pwa');
+
+module.exports = withPWA({
+  pwa: {
+    dest: 'public',
+    skipWaiting: true,
+    register: true,
+  },
   reactStrictMode: true,
   images: {
     domains: ['lh3.googleusercontent.com'],
@@ -11,4 +18,4 @@ module.exports = {
 
     return config;
   },
-};
+});
