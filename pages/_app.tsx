@@ -1,3 +1,4 @@
+import Head from 'next/head';
 import '../styles/globals.css';
 import ModalContextProvider from '../context/ModalContextProvider';
 import JournalContextProvider from '../context/JournalContextProvider';
@@ -8,6 +9,9 @@ function MyApp({ Component, pageProps }) {
   if (Component.getLayout) {
     return (
       <>
+        <Head>
+          <title>Confidiary</title>
+        </Head>
         <AuthContextProvider>
           <ModalContextProvider>
             <JournalContextProvider>
@@ -20,6 +24,9 @@ function MyApp({ Component, pageProps }) {
   } else {
     return (
       <>
+        <Head>
+          <title>Confidiary</title>
+        </Head>
         <AuthContextProvider>
           <ModalContextProvider>
             <JournalContextProvider>
