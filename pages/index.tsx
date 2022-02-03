@@ -11,8 +11,7 @@ import LoadingScreen from '../components/LoadingScreen';
 
 export default function Home() {
   const router = useRouter();
-  const { changeStorageType, storageType } = useJournalContext();
-  const { user, isLoading } = useAuth();
+  const { user, isLoading, changeStorageType, storageType } = useAuth();
 
   useEffect(() => {
     if (isLoading) return;

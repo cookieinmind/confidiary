@@ -2,10 +2,13 @@ import React, { useState, useEffect, useContext, createContext } from 'react';
 import nookies from 'nookies';
 import { auth } from '../firebase/firebase-config';
 import { onIdTokenChanged, User } from 'firebase/auth';
+import { StorageType } from '../components/utils/Models';
 
 type IAuthContext = {
   user: User;
   isLoading: boolean;
+  storageType: StorageType;
+  changeStorageType: (x: StorageType) => void;
 };
 
 const AuthContext = createContext<IAuthContext>(null);
@@ -19,6 +22,9 @@ export default function AuthContextProvider({
 }) {
   const [user, setUser] = useState<User>();
   const [isLoading, setIsLoading] = useState(true);
+  const [storageType, changeStorageType] = useState<StorageType>(
+    StorageType.Undefined
+  );
 
   useEffect(() => {
     setIsLoading(true);
@@ -37,7 +43,9 @@ export default function AuthContextProvider({
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, isLoading }}>
+    <AuthContext.Provider
+      value={{ user, isLoading, changeStorageType, storageType }}
+    >
       {children}
     </AuthContext.Provider>
   );

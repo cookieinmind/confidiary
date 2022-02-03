@@ -17,13 +17,9 @@ export default function Layout({
   children: JSX.Element | JSX.Element[];
 }) {
   const { isModalOn } = useModalContext();
-  const {
-    storageType,
-    changeStorageType,
-    isLoading: dataIsLoading,
-  } = useJournalContext();
+  const { isLoading: dataIsLoading } = useJournalContext();
   const router = useRouter();
-  const { user, isLoading } = useAuth();
+  const { user, isLoading, storageType, changeStorageType } = useAuth();
 
   useEffect(() => {
     if (isLoading) return;

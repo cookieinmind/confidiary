@@ -17,14 +17,13 @@ import {
   subscribeToUserFeelings as subscribeToUserFeelings_ls,
   setFeelingsDirectly as saveFeelingsInLocalStorage,
 } from '../localStorage/localStorage-methods';
+import { useAuth } from './AuthContextProvider';
 
 export type JournalDiccionary = {
   [key: string]: JournalEntry[];
 };
 
 type ModalContextState = {
-  storageType: StorageType;
-  changeStorageType: (x: StorageType) => void;
   entries: JournalEntry[];
   entriesByDate: JournalDiccionary;
   feelings: Feeling[];
@@ -41,8 +40,9 @@ export const useJournalContext = () => {
 };
 
 export default function JournalContextProvider({ children }) {
+  const { storageType } = useAuth();
+
   //*State
-  const [storageType, setStorageType] = useState<StorageType>();
   const [feelings, setFeelings] = useState<Feeling[]>();
   const [entries, setEntries] = useState<JournalEntry[]>();
   const [entriesByDate, setEntriesByDate] = useState<JournalDiccionary>();
@@ -50,10 +50,6 @@ export default function JournalContextProvider({ children }) {
   const [unsubFromFeelings, setUnsubFromFeelings] = useState<() => void>();
   const [unsubFromEntries, setUnsubFromEntries] = useState<() => void>();
 
-  //*Set the functionality of the app
-  function changeStorageType(newType: StorageType) {
-    setStorageType(newType);
-  }
   //*Methods
   function findFeeling(feelingName: string): Feeling {
     if (!feelings) return;
@@ -167,8 +163,6 @@ export default function JournalContextProvider({ children }) {
   }, [storageType]);
 
   const state = {
-    storageType,
-    changeStorageType,
     entries,
     feelings,
     createEntry,
