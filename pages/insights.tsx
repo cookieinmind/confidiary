@@ -6,12 +6,13 @@ import { USERS_TO_NOTIFY_PATH } from '../firebase/Paths';
 import { StorageType, UserToNotify } from '../components/utils/Models';
 import { FirebaseError } from 'firebase/app';
 import { useJournalContext } from '../context/JournalContextProvider';
+import { useAuth } from '../context/AuthContextProvider';
 
 export default function Insights() {
   const [notifyMe, setNotifyMe] = useState<boolean | null>(null);
   const inputRef = useRef<HTMLInputElement>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const { storageType } = useJournalContext();
+  const { storageType } = useAuth();
 
   function change(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();

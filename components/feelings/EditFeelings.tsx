@@ -31,15 +31,7 @@ export default function EditFeeling({
     submit();
   }
 
-  async function submit() {
-    // console.log('called submit');
-    // const data: JournalEntry = {
-    //   date: DateTime.now().toISO(),
-    //   feelingName: feeling.name,
-    //   uid: auth?.currentUser?.uid,
-    //   why: why,
-    // };
-    // createEntry(data);
+  async function submit() {   
     router.push(RouterPaths.entries);
     onClose();
   }
