@@ -8,6 +8,8 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { useJournalContext } from '../../context/JournalContextProvider';
 import { StorageType } from '../utils/Models';
 import { RouterPaths } from '../../context/RouterPaths';
+import { useAuth } from '../../context/AuthContextProvider';
+import LoadingScreen from '../LoadingScreen';
 
 export default function Layout({
   children,
@@ -15,37 +17,40 @@ export default function Layout({
   children: JSX.Element | JSX.Element[];
 }) {
   const { isModalOn } = useModalContext();
-  const { storageType, changeStorageType } = useJournalContext();
+  const {
+    storageType,
+    changeStorageType,
+    isLoading: dataIsLoading,
+  } = useJournalContext();
   const router = useRouter();
+  const { user, isLoading } = useAuth();
 
   useEffect(() => {
-    switch (storageType) {
-      case StorageType.Firebase:
-        const unsub = onAuthStateChanged(auth, (user) => {
-          if (!user) signOut();
-        });
+    if (isLoading) return;
 
-        return () => {
-          console.log('removing auth listener');
-          unsub();
-        };
-      case StorageType.Local:
-        console.log('the user is on local storage mode, keep it in');
-        break;
-      default:
-        console.log(
-          'Layout is signing the user out bc the storage type is undefined , look: ',
-          storageType
-        );
-        signOut();
-        break;
+    if (user) {
+      changeStorageType(StorageType.Firebase);
+      const unsub = onAuthStateChanged(auth, (user) => {
+        if (!user) router.push(RouterPaths.signIn);
+      });
+
+      return () => {
+        console.log('removing auth listener');
+        unsub();
+      };
+    } else if (!user && storageType === StorageType.Local) {
+      console.log('the user is on local storage mode, keep it in');
+    } else {
+      console.log(
+        'Layout is signing the user out bc the storage type is undefined, look:',
+        storageType
+      );
+      router.push(RouterPaths.signIn);
     }
-  }, []);
+  }, [user, isLoading]);
 
-  function signOut() {
-    console.log('going out?');
-    auth.signOut();
-    router.push(RouterPaths.signIn);
+  if (isLoading || dataIsLoading) {
+    return <LoadingScreen message="loading entries..." />;
   }
 
   return (

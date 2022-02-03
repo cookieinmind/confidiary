@@ -6,6 +6,7 @@
 .pnp.js
 *.env*
 data.json
+admin-keys.json
 
 # testing
 /coverage

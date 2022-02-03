@@ -1,9 +1,9 @@
-// import * as admin from 'firebase-admin';
-// import { config } from './deleteMe';
+// import admin from 'firebase-admin';
+// import serviceAcc from './admin-keys.json';
 
 // try {
 //   admin.initializeApp({
-//     credential: admin.credential.cert(config),
+//     credential: admin.credential.cert(serviceAcc),
 //   });
 //   console.log('Initialized.');
 // } catch (error) {
@@ -16,7 +16,12 @@
 //   }
 // }
 
-// const admin_firestore = admin.firestore();
+// // const admin_firestore = admin.firestore();
 // const admin_auth = admin.auth();
 
-// export { admin_firestore, admin_auth };
+// const verifyIdToken = (token) => {
+//   console.log(token);
+//   return admin_auth.verifyIdToken(token);
+// };
+
+// export { verifyIdToken };

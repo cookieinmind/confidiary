@@ -6,13 +6,19 @@ import { browserLocalPersistence } from 'firebase/auth';
 import { useJournalContext } from '../context/JournalContextProvider';
 import { StorageType } from '../components/utils/Models';
 import { RouterPaths } from '../context/RouterPaths';
+import { useAuth } from '../context/AuthContextProvider';
+import LoadingScreen from '../components/LoadingScreen';
 
 export default function Home() {
   const router = useRouter();
   const { changeStorageType, storageType } = useJournalContext();
+  const { user, isLoading } = useAuth();
 
   useEffect(() => {
-    if (storageType === StorageType.Firebase && auth.currentUser) {
+    if (isLoading) return;
+    console.log('user-->', user);
+
+    if (user) {
       console.log('w google');
       inWithGoogle();
     } else if (storageType === StorageType.Local) {
@@ -21,22 +27,7 @@ export default function Home() {
     } else {
       console.log('no storage type set');
     }
-    //   if (auth.currentUser) {
-    //     //The user prob wants to use the firebase version
-    //     changeStorageType(StorageType.Firebase);
-    //     inWithGoogle();
-    //   }
-
-    // console.log('is the user defined:', auth);
-    // if (storageType === StorageType.Firebase) {
-    //   auth.setPersistence(browserLocalPersistence);
-    //   onAuthStateChanged(auth, (user) => {
-    //     if (user) {
-    //       inWithGoogle();
-    //     }
-    //   });
-    // }
-  }, []);
+  }, [isLoading, user]);
 
   function goHome() {
     router.push(RouterPaths.entries);
@@ -58,6 +49,10 @@ export default function Home() {
   async function inWithLocalStorage() {
     changeStorageType(StorageType.Local);
     goHome();
+  }
+
+  if (isLoading) {
+    return <LoadingScreen />;
   }
 
   return (
