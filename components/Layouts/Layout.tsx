@@ -43,7 +43,7 @@ export default function Layout({
       );
       router.push(RouterPaths.signIn);
     }
-  }, [user, isLoading]);
+  }, [user, isLoading, storageType]);
 
   if (isLoading || dataIsLoading) {
     return <LoadingScreen message="loading entries..." />;

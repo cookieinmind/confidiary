@@ -1,13 +1,12 @@
+import { User } from 'firebase/auth';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
-import { useJournalContext } from '../context/JournalContextProvider';
-import { auth } from '../firebase/firebase-config';
-// import { useRouter } from 'next/router';
+import { useState } from 'react';
+import { useAuth } from '../context/AuthContextProvider';
 import Modal from './utils/Modal';
 import { StorageType } from './utils/Models';
 
 export default function SearchBar() {
-  const { storageType } = useJournalContext();
+  const { storageType, logOut, user } = useAuth();
 
   return (
     <div className="w-full flex justify-around items-center py-2 pl-4 pr-2  rounded-full drop-shadow-3 bg-surface">
@@ -17,16 +16,22 @@ export default function SearchBar() {
         className="body-base grow text-center "
         disabled={true}
       />
-      {auth?.currentUser?.photoURL && <ProfilePhoto user={auth.currentUser} />}
-      {storageType === StorageType.Local && <LocaleStorageButton />}
+      {user?.photoURL && <ProfilePhoto user={user} logOut={logOut} />}
+      {storageType === StorageType.Local && (
+        <LocaleStorageButton logOut={logOut} />
+      )}
     </div>
   );
 }
 
-function LocaleStorageButton() {
+function LocaleStorageButton({ logOut }: { logOut: () => void }) {
   const [openModal, setOpenModal] = useState<boolean>();
-
   const [showErrorModal, setShowErrorModal] = useState<boolean>(false);
+
+  function ManageLogOut() {
+    setOpenModal(false);
+    logOut();
+  }
 
   return (
     <div>
@@ -62,10 +67,10 @@ function LocaleStorageButton() {
               <figure className="aspect-square h-[16px] center group-hover:scale-125 transition-all">
                 <Image src="/google-logo.svg" height={16} width={16} />
               </figure>
-              <span className="label-xl">Sign in with Google</span>
+              <span className="label-xl">Sync account with Google</span>
             </button>
 
-            <button
+            {/* <button
               className="w-full bg-black text-surface py-3 px-4 rounded-full drop-shadow-1 flex items-center justify-center gap-4
                 group transition-all hover:drop-shadow-3
                 "
@@ -75,6 +80,18 @@ function LocaleStorageButton() {
                 close
               </span>
               <span className="label-xl">No, stay in local storage</span>
+            </button> */}
+
+            <button
+              className="w-full bg-black text-surface py-3 px-4 rounded-full drop-shadow-1 flex items-center justify-center gap-4
+                group transition-all hover:drop-shadow-3
+                "
+              onClick={ManageLogOut}
+            >
+              <span className="material-icons text-xl opacity-50  group-hover:opacity-100 group-hover:scale-125 transition-all ease-in-out">
+                logout
+              </span>
+              <span className="label-xl">Log out</span>
             </button>
           </div>
         </Modal>
@@ -134,12 +151,17 @@ function LocaleStorageButton() {
   );
 }
 
-function ProfilePhoto({ user }) {
-  const [logOut, setLogOut] = useState<boolean>();
+function ProfilePhoto({ user, logOut }: { user: User; logOut: () => void }) {
+  const [showModal, setShowModal] = useState<boolean>();
+
+  function ManageLogOut() {
+    setShowModal(false);
+    logOut();
+  }
 
   return (
     <div>
-      <button onClick={() => setLogOut(true)} className="center">
+      <button onClick={() => setShowModal(true)} className="center">
         <Image
           src={user?.photoURL}
           height={32}
@@ -147,12 +169,12 @@ function ProfilePhoto({ user }) {
           className="rounded-full"
         />
       </button>
-      {logOut && (
+      {showModal && (
         <Modal>
           {/* Overlay */}
           <div
             className="z-10 fixed inset-0 bg-darkTransparent"
-            onClick={() => setLogOut(false)}
+            onClick={() => setShowModal(false)}
           />
           {/* Spacing*/}
           <div className="bg-surface z-20 fixed bottom-0  w-screen px-4 pt-6 pb-10 drop-shadow-5 flex flex-col items-center gap-4 rounded-t-3xl">
@@ -160,7 +182,7 @@ function ProfilePhoto({ user }) {
             <button
               className="w-full bg-black text-surface py-3 px-4 rounded-full drop-shadow-2 flex items-center justify-center gap-4
             group transition-all hover:drop-shadow-3"
-              onClick={() => auth.signOut()}
+              onClick={ManageLogOut}
             >
               <span className="material-icons text-xl opacity-50 group-hover:opacity-100  group-hover:translate-x-1 transition-all ">
                 logout
@@ -172,7 +194,7 @@ function ProfilePhoto({ user }) {
               className="w-full bg-surface py-2 px-4 rounded-full drop-shadow-1 flex items-center justify-center gap-4
               group transition-all hover:drop-shadow-3 
               "
-              onClick={() => setLogOut(false)}
+              onClick={() => setShowModal(false)}
             >
               <span className="material-icons text-xl opacity-50  group-hover:opacity-100 group-hover:scale-125 transition-all ease-in-out">
                 close

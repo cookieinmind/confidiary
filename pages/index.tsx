@@ -1,9 +1,8 @@
 import Image from 'next/image';
-import { auth, signInWithGoogle } from '../firebase/firebase-config';
+import { auth } from '../firebase/firebase-config';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { browserLocalPersistence } from 'firebase/auth';
-import { useJournalContext } from '../context/JournalContextProvider';
 import { StorageType } from '../components/utils/Models';
 import { RouterPaths } from '../context/RouterPaths';
 import { useAuth } from '../context/AuthContextProvider';
@@ -11,18 +10,25 @@ import LoadingScreen from '../components/LoadingScreen';
 
 export default function Home() {
   const router = useRouter();
-  const { user, isLoading, changeStorageType, storageType } = useAuth();
+  const {
+    user,
+    isLoading,
+    storageType,
+    signInWithGoogle,
+    signInWithLocalStorage,
+  } = useAuth();
 
+  //Controls the redirects
   useEffect(() => {
     if (isLoading) return;
     console.log('user-->', user);
 
     if (user) {
       console.log('w google');
-      inWithGoogle();
+      goHome();
     } else if (storageType === StorageType.Local) {
       console.log('w ls');
-      inWithLocalStorage();
+      goHome();
     } else {
       console.log('no storage type set');
     }
@@ -34,19 +40,11 @@ export default function Home() {
 
   async function manageSignInWihtGoogle() {
     await signInWithGoogle();
-    inWithGoogle();
-  }
-
-  function inWithGoogle() {
-    if (auth.currentUser) {
-      auth.setPersistence(browserLocalPersistence);
-      changeStorageType(StorageType.Firebase);
-      goHome();
-    }
+    goHome();
   }
 
   async function inWithLocalStorage() {
-    changeStorageType(StorageType.Local);
+    signInWithLocalStorage();
     goHome();
   }
 
